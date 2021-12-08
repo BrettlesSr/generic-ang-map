@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { map, Observable } from 'rxjs';
 import { AppComponent } from '../app.component';
 import { Option } from '../models/option';
-import {MatDialog } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-title',
@@ -62,5 +62,13 @@ export class TitleComponent implements OnInit {
   }
 
   buildOptions(): void {
+  }
+
+  openAddMapPin(): void {
+    this.parent.addMapPinClicked();
+  }
+
+  openAddPlace(): void {
+    this.parent.addPlaceClicked();
   }
 }

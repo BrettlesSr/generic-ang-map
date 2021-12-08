@@ -6,33 +6,27 @@
   <mat-icon>donut_small</mat-icon>
 </button>
 
-<mat-drawer-container class="example-container" autosize>
+<mat-drawer-container class="example-container" autosize (click)="registerLocation($event)">
 
   <mat-drawer #drawer class="sidenav-fixed" mode="side" position="end">
-    <!-- <app-star-info
-      *ngIf = "mode === 0"
-      [starInfo]="activeStar"
+    <app-place-info
+      *ngIf = "drawerMode == 2"
+      [info]="activePlace"
       [parent]="this">
-    </app-star-info>
-    <app-polity-info
-    *ngIf = "mode === 1"
-    [polityInfo]="activePolity"
-    [parent]="this">
-    </app-polity-info>
-    <app-region-info
-    *ngIf = "mode === 2"
-    [regionInfo]="activeRegion">
-    </app-region-info> -->
+    </app-place-info>
+    <app-pin-info
+      *ngIf = "drawerMode == 1"
+      [info]="activePin"
+      [parent]="this">
+    </app-pin-info>
   </mat-drawer>
 
   <pan-zoom [config]="panZoomConfig">
     <div style="position: relative;">
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
       <map name="starmap">
-        <!-- <area *ngFor="let star of allStars" shape="rect" coords="{{star.xStart}}, {{star.yStart}}, {{star.xEnd}}, {{star.yEnd}}" alt="{{star.name}}" (click)="openDrawerToStar(star.name)">
-        <area *ngFor="let region of allRegions" shape="rect" coords="{{region.xStart}}, {{region.yStart}}, {{region.xEnd}}, {{region.yEnd}}" alt="{{region.name}}" (click)="openDrawerToRegion(region.name)">
-        <area shape="rect" coords="1237,1627,1338,1669" alt="drifter space" (click)="openDrifterSubMap()">
-        <area shape="rect" coords="0,0,{{mapDimension}},{{mapDimension}}" (click)="closeDrawer()">  -->
+        <area *ngFor="let place of places" shape="rect" coords="{{place.xStart}}, {{place.yStart}}, {{place.xEnd}}, {{place.yEnd}}" alt="{{place.name}}" (click)="openDrawerToPlace(place.key)">
+        <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()">
       </map>
       <div
         class="highlight"

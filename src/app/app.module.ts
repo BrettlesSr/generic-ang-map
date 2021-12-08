@@ -13,15 +13,20 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { NgxPanZoomModule } from 'ngx-panzoom';
 import { TitleComponent } from './title/title.component';
+import { PlaceInfoComponent } from './place-info/place-info.component';
+import { PinInfoComponent } from './pin-info/pin-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TitleComponent
+    TitleComponent,
+    PlaceInfoComponent,
+    PinInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +42,8 @@ import { TitleComponent } from './title/title.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

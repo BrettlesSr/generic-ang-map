@@ -1,0 +1,33 @@
+.tab-content {
+    margin: 10px;
+    margin-bottom: 15px;
+}
+
+.title {
+    font-size: large;
+    margin: 10px;
+    margin-bottom: 20px;
+}
+
+
+.link-chip{
+    cursor: pointer;
+}
+
+.non-link {
+    font-size: larger;
+    color: black;
+    text-decoration: none;
+}
+
+.fake-external-link-large{  
+    font-size: larger;
+    color: black;
+    text-decoration: none;
+    &:hover {
+        font-size: larger;
+        color: black;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+}

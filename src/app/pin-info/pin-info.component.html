@@ -1,0 +1,14 @@
+<mat-tab-group *ngIf="info" mat-align-tabs="center">
+    <mat-tab label="{{info.name}}">
+
+        <div *ngIf="info.color && info.color.length > 0" class="tab-content">
+            <img src="{{info.color}}" width=480px class="thumbnail">
+        </div>
+
+        <div>
+            {{shortened(info.description, 200)}}
+        </div>
+
+    </mat-tab>
+
+</mat-tab-group>
