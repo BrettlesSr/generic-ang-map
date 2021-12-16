@@ -1,10 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PanZoomConfig, PanZoomAPI, PanZoomModel } from 'ngx-panzoom';
 import { Subscription } from 'rxjs';
+import { AddPinComponent } from './add-pin/add-pin.component';
+import { AddPlaceComponent } from './add-place/add-place.component';
 import { AppMode } from './enums/appMode';
 import { DrawerMode } from './enums/drawerMode';
 import { Pin } from './models/pin';
 import { Place } from './models/place';
+import { Point } from './models/point';
+import { Square } from './models/square';
 
 
 @Component({
@@ -13,7 +18,6 @@ import { Place } from './models/place';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'generic-ang-map';
   mapUrls = ['https://cdn.discordapp.com/attachments/908862090738012170/915667261983952936/airshipgamemap.jpg'];
   mapIndex = 0;
   mapHeight = 1000;
@@ -37,6 +41,13 @@ export class AppComponent implements OnInit, OnDestroy {
   activePin: Pin = new Pin();
   drawerMode: DrawerMode = DrawerMode.Closed;
 
+  points: Point[] = [];
+  resolution = 20;
+
+  pointBuffer: Point = new Point();
+
+  constructor(public dialog: MatDialog){}
+
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
     this.panZoomConfig.zoomLevels = 7;
@@ -54,6 +65,11 @@ export class AppComponent implements OnInit, OnDestroy {
           self.mapHeight = event.path[0].height;
           self.mapWidth = event.path[0].width;
           self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, false);
+          for (let x = 0; x < self.mapWidth; x += this.resolution) {
+            for (let y = 0; y < self.mapHeight; y += this.resolution) {
+              self.points.push({x, y});
+            }
+          }
         }
       }
       img.src = url;
@@ -156,8 +172,54 @@ export class AppComponent implements OnInit, OnDestroy {
     }, this.timeToOpen);
   }
 
-  registerLocation(event: MouseEvent) {
+  registerLocation(x: number, y: number) {
+    this.closeDrawer();
+    switch (this.mode) {
+      case AppMode.AddingPin:
+        this.openMapPinDialog(x, y);
+        break;
+      case AppMode.AddingPlacePoint1:
+        this.pointBuffer = { x, y };
+        this.mode = AppMode.AddingPlacePoint2;
+        break;
+      case AppMode.AddingPlacePoint2:
+        this.openMapPlaceDialog({ xStart: this.pointBuffer.x, yStart: this.pointBuffer.y, xEnd: x, yEnd: y});
+        break;
+      default:
+        break;
+    }
+  }
 
+  openMapPinDialog(x: number, y: number) {
+    const dialogRef = this.dialog.open(AddPinComponent, {
+      width: '600px',
+      data: { x, y }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.mode = AppMode.Normal;
+      if (result === undefined) {
+        return;
+      }
+      console.log(result);
+      this.pins.push(result);
+    });
+  }
+
+  openMapPlaceDialog(square: Square) {
+    const dialogRef = this.dialog.open(AddPlaceComponent, {
+      width: '600px',
+      data: square
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.mode = AppMode.Normal;
+      if (result === undefined) {
+        return;
+      }
+      console.log(result);
+      this.places.push(result);
+    });
   }
 
   get highlightDimensionsCss(): object{

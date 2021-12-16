@@ -6,7 +6,7 @@
   <mat-icon>donut_small</mat-icon>
 </button>
 
-<mat-drawer-container class="example-container" autosize (click)="registerLocation($event)">
+<mat-drawer-container class="example-container" autosize>
 
   <mat-drawer #drawer class="sidenav-fixed" mode="side" position="end">
     <app-place-info
@@ -26,7 +26,7 @@
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
       <map name="starmap">
         <area *ngFor="let place of places" shape="rect" coords="{{place.xStart}}, {{place.yStart}}, {{place.xEnd}}, {{place.yEnd}}" alt="{{place.name}}" (click)="openDrawerToPlace(place.key)">
-        <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()">
+        <area *ngFor="let point of points" shape="rect" coords="{{point.x}}, {{point.y}}, {{(point.x + this.resolution)}}, {{(point.y + this.resolution)}}" (click)="registerLocation((point.x + (this.resolution/2)), (point.y + (this.resolution/2)))">
       </map>
       <div
         class="highlight"

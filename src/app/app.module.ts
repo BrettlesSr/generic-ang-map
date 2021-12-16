@@ -20,13 +20,17 @@ import { NgxPanZoomModule } from 'ngx-panzoom';
 import { TitleComponent } from './title/title.component';
 import { PlaceInfoComponent } from './place-info/place-info.component';
 import { PinInfoComponent } from './pin-info/pin-info.component';
+import { AddPinComponent } from './add-pin/add-pin.component';
+import { AddPlaceComponent } from './add-place/add-place.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TitleComponent,
     PlaceInfoComponent,
-    PinInfoComponent
+    PinInfoComponent,
+    AddPinComponent,
+    AddPlaceComponent
   ],
   imports: [
     BrowserModule,
