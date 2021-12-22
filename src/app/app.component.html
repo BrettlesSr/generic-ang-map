@@ -21,7 +21,7 @@
     </app-pin-info>
   </mat-drawer>
 
-  <pan-zoom [config]="panZoomConfig">
+  <pan-zoom [hidden]="!hasLoaded" [config]="panZoomConfig">
     <div style="position: relative;">
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
       <map name="starmap">

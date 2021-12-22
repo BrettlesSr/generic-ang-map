@@ -71,4 +71,12 @@ export class TitleComponent implements OnInit {
   openAddPlace(): void {
     this.parent.addPlaceClicked();
   }
+
+  get mapPinButtonLabel(): string {
+    return this.parent.mapPinButtonLabel;
+  }
+
+  get placeButtonLabel(): string {
+    return this.parent.placeButtonLabel;
+  }
 }

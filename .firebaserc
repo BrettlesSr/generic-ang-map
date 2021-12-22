@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "map-app-v2-225cc": {
+      "hosting": {
+        "generic-ang-map": [
+          "map-app-v2-225cc"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "map-app-v2-225cc"
+  }
+}

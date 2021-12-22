@@ -10,6 +10,7 @@ import { Pin } from './models/pin';
 import { Place } from './models/place';
 import { Point } from './models/point';
 import { Square } from './models/square';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private panZoomAPI!: PanZoomAPI;
   private apiSubscription!: Subscription;
   mode: AppMode = AppMode.Normal;
+  hasLoaded = false;
 
   //marker box
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
@@ -46,7 +48,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   pointBuffer: Point = new Point();
 
-  constructor(public dialog: MatDialog){}
+  constructor(public dialog: MatDialog, private db: AngularFireDatabase){}
 
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
@@ -56,6 +58,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.panZoomConfig.freeMouseWheel = false;
     this.panZoomConfig.invertMouseWheel = true;
     this.panZoomConfig.initialZoomLevel = 3;
+    
+    this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
+      this.places = places;
+    });
+    this.db.list<Pin>('/pins').valueChanges().subscribe((pins: Pin[]) => {
+      this.pins = pins;
+    });
+
     this.apiSubscription = this.panZoomConfig.api.subscribe( (api: PanZoomAPI) => this.panZoomAPI = api );
     for (const url of this.mapUrls) {
       const img = new Image();
@@ -64,7 +74,8 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = event.path[0].height;
           self.mapWidth = event.path[0].width;
-          self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, false);
+          //self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, false); TODO get this working properly
+          self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
             for (let y = 0; y < self.mapHeight; y += this.resolution) {
               self.points.push({x, y});
@@ -105,7 +116,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.panZoomAPI.detectContentDimensions();
       this.panZoomAPI.panToPoint(point);
     }, (this.isOpen ? 0 : this.timeToOpen));
-    
   }
 
   tickDownCountdown(): void {
@@ -201,8 +211,7 @@ export class AppComponent implements OnInit, OnDestroy {
       if (result === undefined) {
         return;
       }
-      console.log(result);
-      this.pins.push(result);
+      this.db.list('/pins').push(result);
     });
   }
 
@@ -217,8 +226,7 @@ export class AppComponent implements OnInit, OnDestroy {
       if (result === undefined) {
         return;
       }
-      console.log(result);
-      this.places.push(result);
+      this.db.list('/places').push(result);
     });
   }
 
@@ -240,5 +248,33 @@ export class AppComponent implements OnInit, OnDestroy {
        left: ((this.xStart ?? 0) * 1).toFixed(0) + 'px',
        'box-shadow': ('0 0 0 100vmax rgba(0,0,0,' + alpha + ')')
     };
+  }
+
+  get mapPinButtonLabel(): string {
+    switch (this.mode) {
+      case AppMode.Normal:
+        return '    Add Pin';
+      case AppMode.AddingPin:
+        return '    Click on Map to Add Pin';
+      case AppMode.AddingPlacePoint1:
+      case AppMode.AddingPlacePoint2:
+        return '    Add Pin';
+      default:
+        return '';
+    }
+  }
+
+  get placeButtonLabel(): string {
+    switch (this.mode) {
+      case AppMode.Normal:
+        return '    Add Place';
+      case AppMode.AddingPin:
+        return '    Add Place';
+      case AppMode.AddingPlacePoint1:
+      case AppMode.AddingPlacePoint2:
+        return '    Click on Map twice to Add Place';
+      default:
+        return '';
+    }
   }
 }

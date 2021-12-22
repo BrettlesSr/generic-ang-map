@@ -105,6 +105,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "generic-ang-map:build:production",
+            "firebaseProject": "map-app-v2-225cc",
+            "firebaseHostingSite": "map-app-v2-225cc"
+          }
         }
       }
     }
