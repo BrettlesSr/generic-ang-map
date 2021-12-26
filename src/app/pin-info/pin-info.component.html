@@ -1,11 +1,11 @@
 <mat-tab-group *ngIf="info" mat-align-tabs="center">
     <mat-tab label="{{info.name}}">
 
-        <div *ngIf="info.color && info.color.length > 0" class="tab-content">
-            <img src="{{info.color}}" width=480px class="thumbnail">
-        </div>
+        <!-- <div *ngIf="info.color && info.color.length > 0" class="tab-content">
+            <img src="{{info.color}}" width="120px" class="thumbnail">
+        </div> -->
 
-        <div>
+        <div class="top-padding">
             {{shortened(info.description, 200)}}
         </div>
 

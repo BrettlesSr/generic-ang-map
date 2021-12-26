@@ -32,7 +32,8 @@
         class="highlight"
         [ngStyle]="highlightDimensionsCss">
       </div>
+      <img *ngFor="let pin of pins" src="{{pin.color}}" [ngStyle]="pinStyle(pin)" width="60" height="90" (click)="openDrawerToPin(pin.key)">
     </div>    
-  </pan-zoom>  
+  </pan-zoom>
   
 </mat-drawer-container>

@@ -2,7 +2,7 @@
     <img src="https://i.imgur.com/hmKKNBJ.png" width="165" height="90">
     <div class="text left">Skies of Steel Map</div>
     <form class="example-form middle search" spellcheck="false">
-        <mat-form-field class="example-full-width" [style.fontSize.px]=17>
+        <!-- <mat-form-field class="example-full-width" [style.fontSize.px]=17>
           <mat-label><i class="fas fa-search"></i> Search</mat-label>
           <input
           type="text"
@@ -16,11 +16,11 @@
             <mat-icon>close</mat-icon>
           </button>
           <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.value" [ngClass]="{'hide-autocomplete': !showAutoComplete}" (click)="optionClicked(option)">
-              {{option.value}}
+            <mat-option *ngFor="let option of filteredOptions | async" [value]="option.label" [ngClass]="{'hide-autocomplete': !showAutoComplete}" (click)="optionClicked(option)">
+              {{option.label}}
             </mat-option>
         </mat-autocomplete>
-        </mat-form-field>
+        </mat-form-field> -->
     </form>
     <span class="right">
       <div>

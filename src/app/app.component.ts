@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { PanZoomConfig, PanZoomAPI, PanZoomModel } from 'ngx-panzoom';
+import { PanZoomConfig, PanZoomAPI } from 'ngx-panzoom';
 import { Subscription } from 'rxjs';
 import { AddPinComponent } from './add-pin/add-pin.component';
 import { AddPlaceComponent } from './add-place/add-place.component';
@@ -36,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
 
   @ViewChild('drawer') drawer?: { open: () => void; close: () => void; };
+  @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
 
   pins: Pin[] = [];
   places: Place[] = [];
@@ -61,9 +62,11 @@ export class AppComponent implements OnInit, OnDestroy {
     
     this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
       this.places = places;
+      this.titleChild?.buildOptions();
     });
     this.db.list<Pin>('/pins').valueChanges().subscribe((pins: Pin[]) => {
       this.pins = pins;
+      this.titleChild?.buildOptions();
     });
 
     this.apiSubscription = this.panZoomConfig.api.subscribe( (api: PanZoomAPI) => this.panZoomAPI = api );
@@ -168,7 +171,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.drawer.open();
       this.isOpen = true;
       this.activePin = matching[0];
-      this.drawerMode = DrawerMode.Place;
+      this.drawerMode = DrawerMode.Pin;
     }
   }
 
@@ -228,6 +231,15 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.db.list('/places').push(result);
     });
+  }
+
+  pinStyle(pin: Pin): object {
+    return {
+      position: 'absolute',
+      top: pin.y + 'px',
+      left: pin.x + 'px',
+      'z-index': 10
+    };
   }
 
   get highlightDimensionsCss(): object{

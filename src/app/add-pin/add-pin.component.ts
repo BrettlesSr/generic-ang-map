@@ -11,6 +11,14 @@ import { Point } from '../models/point';
 })
 export class AddPinComponent implements OnInit {
   pin: Pin = new Pin();
+  colors = [
+    {label: 'Blue', url:'https://i.imgur.com/r2AuFm7.png'},
+    {label: 'Green', url:'https://i.imgur.com/bekbNVR.png'},
+    {label: 'Orange', url:'https://i.imgur.com/3HIZM9n.png'},
+    {label: 'Purple', url:'https://i.imgur.com/wREUBTt.png'},
+    {label: 'Red', url:'https://i.imgur.com/FKitmCU.png'},
+    {label: 'Yellow', url:'https://i.imgur.com/51JNbdX.png'},
+  ];
 
   constructor(
     public dialogRef: MatDialogRef<AddPinComponent>,

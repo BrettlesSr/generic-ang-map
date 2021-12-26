@@ -1,6 +1,9 @@
+import { OptionType } from "../enums/optionType";
+
 export interface Option {
-    value: string;
+    label: string;
     fullSearchText: string;
-    starName: string;
+    key: string;
+    type: OptionType
     order: number;
 }

@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { AppComponent } from '../app.component';
 import { Option } from '../models/option';
 import { MatDialog } from '@angular/material/dialog';
+import { OptionType } from '../enums/optionType';
 
 @Component({
   selector: 'app-title',
@@ -21,7 +22,6 @@ export class TitleComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog
-    //,private db: AngularFireDatabase
     ) { }
 
   @ViewChild('titleChild') titleChild!: { buildOptions: () => void; };
@@ -53,15 +53,45 @@ export class TitleComponent implements OnInit {
   }
 
   optionClicked(option: Option): void {
-    //this.parent.scrollToStar(option.starName);
+    if (option.type === OptionType.Pin) {
+      this.parent.openDrawerToPin(option.key);
+    }
+    if (option.type === OptionType.Place) {
+      this.parent.openDrawerToPlace(option.key);
+    }
     this.showAutoComplete = false;
+  }
+
+  buildOptions(): void {
+    if (this.parent.pins === undefined ||
+        this.parent.places === undefined) {
+        return;
+    }
+    const newOptions = [];
+    for (const place of this.parent.places) {
+      newOptions.push({
+        label: place.name,
+        fullSearchText: place.name + place.description,
+        key: place.key,
+        type: OptionType.Place,
+        order: 0
+      });
+    }
+    for (const pin of this.parent.pins) {
+      newOptions.push({
+        label: pin.name,
+        fullSearchText: pin.name + pin.description,
+        key: pin.key,
+        type: OptionType.Pin,
+        order: 1
+      });
+    }
+    this.options = newOptions;
+    console.log(this.options);
   }
 
   clear(): void {
     this.searchFormControl.setValue('');
-  }
-
-  buildOptions(): void {
   }
 
   openAddMapPin(): void {

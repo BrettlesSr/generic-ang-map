@@ -20,7 +20,11 @@ cdkDragHandle><i class="fas fa-map-pin"></i> Add new Map Pin</h1>
   <div>
     <mat-form-field>
       <mat-label>Colour</mat-label>
-      <input matInput [(ngModel)]="pin.color">
+      <mat-select required [(value)]="pin.color">
+        <mat-option *ngFor="let color of colors" [value]="color.url">
+          {{color.label}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
   </div>
 
