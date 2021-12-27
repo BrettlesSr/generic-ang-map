@@ -31,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private apiSubscription!: Subscription;
   mode: AppMode = AppMode.Normal;
   hasLoaded = false;
+  title = 'generic-ang-map'
 
   //marker box
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
@@ -77,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = event.path[0].height;
           self.mapWidth = event.path[0].width;
-          //self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, false); TODO get this working properly
+          //self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, true);
           self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
             for (let y = 0; y < self.mapHeight; y += this.resolution) {
@@ -109,16 +110,18 @@ export class AppComponent implements OnInit, OnDestroy {
       }, 1500);
     }
     
-    const zoom = this.panZoomAPI.model.zoomLevel;
-    const adjustment = (1080 / zoom) - 110;
-    const point = {
-      x: x * 1 + adjustment,
-      y: y * 1
-    };
-    setTimeout(() => {
-      this.panZoomAPI.detectContentDimensions();
-      this.panZoomAPI.panToPoint(point);
-    }, (this.isOpen ? 0 : this.timeToOpen));
+    // console.log(x, y);
+    // const zoom = this.panZoomAPI.model.zoomLevel;
+    // const adjustment = (1080 / zoom) - 110;
+    // const point = {
+    //   x: x * 1,// + adjustment,
+    //   y: y * 1
+    // };
+    // setTimeout(() => {
+    //   this.panZoomAPI.detectContentDimensions();
+    //   this.panZoomAPI.panToPoint(point);
+    //   console.log(point);
+    // }, (this.isOpen ? 0 : this.timeToOpen));
   }
 
   tickDownCountdown(): void {
@@ -162,6 +165,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isOpen = true;
       this.activePlace = matching[0];
       this.drawerMode = DrawerMode.Place;
+      this.scrollToPoint(this.activePlace.x, this.activePlace.y, true);
+      this.xStart = this.activePlace.xStart;
+      this.yStart = this.activePlace.yStart;
+      this.xEnd = this.activePlace.xEnd;
+      this.yEnd = this.activePlace.yEnd;
     }
   }
 
@@ -172,6 +180,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isOpen = true;
       this.activePin = matching[0];
       this.drawerMode = DrawerMode.Pin;
+      this.scrollToPoint(this.activePin.x, this.activePin.y, true);
+      this.xStart = this.activePin.x - 30;
+      this.yStart = this.activePin.y - 90;
+      this.xEnd = this.activePin.x + 30;
+      this.yEnd = this.activePin.y - 5;
     }
   }
 
@@ -236,8 +249,8 @@ export class AppComponent implements OnInit, OnDestroy {
   pinStyle(pin: Pin): object {
     return {
       position: 'absolute',
-      top: pin.y + 'px',
-      left: pin.x + 'px',
+      top: (pin.y - 90) + 'px',
+      left: (pin.x - 30) + 'px',
       'z-index': 10
     };
   }
@@ -258,7 +271,7 @@ export class AppComponent implements OnInit, OnDestroy {
        width: Math.abs(this.xEnd - this.xStart).toFixed(0) + 'px',
        top: ((this.yStart ?? 0) * 1).toFixed(0) + 'px',
        left: ((this.xStart ?? 0) * 1).toFixed(0) + 'px',
-       'box-shadow': ('0 0 0 100vmax rgba(0,0,0,' + alpha + ')')
+       'box-shadow': ('0 0 0 1000vmax rgba(0,0,0,' + alpha + ')')
     };
   }
 

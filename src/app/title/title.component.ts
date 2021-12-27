@@ -87,7 +87,6 @@ export class TitleComponent implements OnInit {
       });
     }
     this.options = newOptions;
-    console.log(this.options);
   }
 
   clear(): void {
