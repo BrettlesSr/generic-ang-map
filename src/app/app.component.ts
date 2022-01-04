@@ -19,7 +19,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  mapUrls = ['https://cdn.discordapp.com/attachments/908862090738012170/915667261983952936/airshipgamemap.jpg'];
+  mapUrls = ['https://cdn.discordapp.com/attachments/908862090738012170/922320242510819358/airshipgamemap.jpg'];
   mapIndex = 0;
   mapHeight = 1000;
   mapWidth = 1000;
