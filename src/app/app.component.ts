@@ -19,7 +19,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  mapUrls = ['https://cdn.discordapp.com/attachments/908862090738012170/922320242510819358/airshipgamemap.jpg'];
+  mapUrls = ['https://i.imgur.com/xbHRYRH.png'];
   mapIndex = 0;
   mapHeight = 1000;
   mapWidth = 1000;
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private apiSubscription!: Subscription;
   mode: AppMode = AppMode.Normal;
   hasLoaded = false;
-  title = 'generic-ang-map'
+  title = 'fta4-ang-map'
 
   //marker box
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
@@ -76,9 +76,9 @@ export class AppComponent implements OnInit, OnDestroy {
       if (url == this.mapUrls[0]) {
         let self = this;
         img.onload = (event: any) => {
-          self.mapHeight = event.path[0].height;
-          self.mapWidth = event.path[0].width;
-          //self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, true);
+          self.mapHeight = img.height;
+          self.mapWidth = img.width;
+          self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, true);
           self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
             for (let y = 0; y < self.mapHeight; y += this.resolution) {
