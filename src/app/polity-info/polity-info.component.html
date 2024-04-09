@@ -1,0 +1,157 @@
+<mat-tab-group *ngIf="polityInfo" mat-align-tabs="center">
+    <mat-tab label="Polity">
+
+        <div class="title">
+            <!-- <a *ngIf="polityInfo.threadlink" href="{{polityInfo.threadlink}}" target="_blank"
+                class="external-link-large">{{polityInfo.name}} <i class="fas fa-external-link-alt fa-xs"></i></a>
+            <div *ngIf="!polityInfo.threadlink" class="non-link">{{polityInfo.name}}</div> -->
+            <div class="non-link">{{polityInfo.name}}</div>
+        </div>
+
+        <!-- <div *ngIf="polityInfo.thumbnail && polityInfo.thumbnail.length > 0">
+            <img src="{{polityInfo.thumbnail}}" width="480px" class="thumbnail">
+        </div> -->
+
+        <!-- <div class="tab-content">
+            {{polityInfo.description}}
+        </div> -->
+
+        <div class="tab-content">
+            Player: {{polityInfo.player}}
+            GDP: {{polityInfo.gdp}}
+            DI: {{polityInfo.di}}
+        </div>
+
+        <!-- <div *ngIf="polityInfo.threadlink && isUrl(polityInfo.threadlink)" class="tab-content"> 
+            <span class="bold">Link to original post: </span>
+            <a *ngIf="polityInfo.threadlink" href="{{polityInfo.threadlink}}" target="_blank" class="external-link-standard">{{polityInfo.name}} <i class="fas fa-external-link-alt fa-xs"></i>
+            </a>
+        </div> -->
+
+        <!-- <div *ngIf="polityInfo.oobThreadlink && isUrl(polityInfo.oobThreadlink)" class="tab-content"> 
+            <span class="bold">Link to Order of Battle (OOB): </span>
+            <a *ngIf="polityInfo.oobThreadlink" href="{{polityInfo.oobThreadlink}}" target="_blank" class="external-link-standard"> Jane's Warfleets and Formations <i class="fas fa-external-link-alt fa-xs"></i>
+            </a>
+        </div>
+
+        <div *ngIf="polityInfo.colonyThreadlink && isUrl(polityInfo.colonyThreadlink)" class="tab-content"> 
+            <span class="bold">Link to Colonization and Trade post: </span>
+            <a *ngIf="polityInfo.colonyThreadlink" href="{{polityInfo.colonyThreadlink}}" target="_blank" class="external-link-standard">Colonies <i class="fas fa-external-link-alt fa-xs"></i>
+            </a>
+        </div>
+
+        <div *ngIf="polityInfo.traits && polityInfo.traits.length > 0" class="tab-content">
+            <span class="bold">Traits: </span>
+            <mat-chip-list>
+                <mat-chip *ngFor="let trait of polityInfo.traits" color="primary">
+                    {{trait}}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+
+        <div *ngIf="polityInfo.flaws && polityInfo.flaws.length > 0" class="tab-content">
+            <span class="bold">Flaws: </span>
+            <mat-chip-list>
+                <mat-chip *ngFor="let flaw of polityInfo.flaws" color="primary">
+                    {{flaw}}
+                </mat-chip>
+            </mat-chip-list>
+        </div> -->
+
+    </mat-tab>
+
+    <mat-tab label="Territories" *ngIf="filteredTerritories && filteredTerritories.length > 0">
+
+        <div class="title">
+            Territories In {{polityInfo.name | article}}
+        </div>
+
+        <div *ngFor="let territory of filteredTerritories" class="tab-content">
+
+            <!-- <div>
+                <a *ngIf="territory.threadlink" href="{{territory.threadlink}}" target="_blank"
+                    class="external-link-large">{{territory.name}} <i class="fas fa-external-link-alt fa-xs"></i></a>
+                <div *ngIf="!territory.threadlink" class="non-link">{{territory.name}}</div>
+            </div>
+            <div *ngIf="territory.thumbnail && territory.thumbnail.length > 0">
+                <img src="{{territory.thumbnail}}" width="480px" class="thumbnail">
+            </div> -->
+            <div>
+                {{getTerritoryDescriptor(territory)}}
+            </div>
+            <div>
+                <mat-chip-list>
+                    <mat-chip color="primary" (click)="openStar(territory.hostStarKey)" class="link-chip"> Go to star →
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+
+        </div>
+
+    </mat-tab>
+
+    <!-- <mat-tab label="History" *ngIf="orderedHistory && orderedHistory.length > 0">
+
+        <div class="title">
+            History Of {{polityInfo.name | article}}
+        </div>
+
+        <mat-accordion>
+            <mat-expansion-panel hideToggle *ngFor="let history of orderedHistory" class="tab-content">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <a *ngIf="history.threadlink" href="{{history.threadlink}}" target="_blank"
+                            class="external-link-large">{{getHistoryDescriptor(history.name, history.date)}} <i
+                                class="fas fa-external-link-alt fa-xs"></i></a>
+                        <div *ngIf="!history.threadlink" class="non-link">{{getHistoryDescriptor(history.name,
+                            history.date)}}</div>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div *ngIf="history.thumbnail && history.thumbnail.length > 0">
+                    <img src="{{history.thumbnail}}" width="460px" class="thumbnail">
+                </div>
+                <div>
+                    {{history.description}}
+                </div>
+                <div>
+                    <mat-chip-list>
+                        <mat-chip *ngFor="let polity of history.politiesInvolved" color="primary"
+                            (click)="openPolity(polity)" class="link-chip"> {{polity}}</mat-chip>
+                        <mat-chip (click)="openAddPolityToHistoryModal(history)" color="primary" class="link-chip">Add
+                            missing</mat-chip>
+                    </mat-chip-list>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+    </mat-tab>
+
+    <mat-tab label="Relations" *ngIf="groupedRelations && groupedRelations.length > 0">
+
+        <div *ngIf="polityInfo.polityType !== 5" class="title">
+            Foreign Relations Of {{polityInfo.name | article}}
+        </div>
+
+        <div *ngIf="polityInfo.polityType === 5" class="title">
+            Membership Of {{polityInfo.name | article}}
+        </div>
+
+        <div *ngFor="let relationGroup of groupedRelations" class="tab-content">
+
+            <div>
+                {{relationGroup.descriptor}}
+            </div>
+            
+            <div>
+                <mat-chip-list>
+                    <mat-chip *ngFor="let relation of relationGroup.relations" color="primary" (click)="openPolity(relation)" class="link-chip">
+                        {{relation}}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+            
+        </div>
+
+    </mat-tab> -->
+
+</mat-tab-group>

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { environment } from '../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,29 +16,25 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ArticlePipe } from './article.pipe';
+import { MatChipsModule } from '@angular/material/chips';
 
 import { NgxPanZoomModule } from 'ngx-panzoom';
 import { TitleComponent } from './title/title.component';
-import { PlaceInfoComponent } from './place-info/place-info.component';
-import { PinInfoComponent } from './pin-info/pin-info.component';
-import { AddPinComponent } from './add-pin/add-pin.component';
-import { AddPlaceComponent } from './add-place/add-place.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
-import { provideDatabase,getDatabase } from '@angular/fire/database';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { AngularFireModule } from '@angular/fire/compat';
+import { PolityInfoComponent } from './polity-info/polity-info.component';
+import { StarInfoComponent } from './star-info/star-info.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TitleComponent,
-    PlaceInfoComponent,
-    PinInfoComponent,
-    AddPinComponent,
-    AddPlaceComponent
+    PolityInfoComponent,
+    StarInfoComponent,
+    ArticlePipe
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MatSidenavModule,
@@ -53,10 +49,7 @@ import { AngularFireModule } from '@angular/fire/compat';
     MatInputModule,
     MatButtonModule,
     MatTabsModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideDatabase(() => getDatabase()),
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireDatabaseModule
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

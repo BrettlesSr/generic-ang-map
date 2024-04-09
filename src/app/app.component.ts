@@ -1,16 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PanZoomConfig, PanZoomAPI } from 'ngx-panzoom';
-import { Subscription } from 'rxjs';
-import { AddPinComponent } from './add-pin/add-pin.component';
-import { AddPlaceComponent } from './add-place/add-place.component';
-import { AppMode } from './enums/appMode';
+import { Observable, Subscription, map } from 'rxjs';
 import { DrawerMode } from './enums/drawerMode';
-import { Pin } from './models/pin';
-import { Place } from './models/place';
 import { Point } from './models/point';
-import { Square } from './models/square';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { Territory } from './models/territory';
+import { Polity } from './models/polity';
+import { Star } from './models/star';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import * as Papa from 'papaparse';
+import { TerritoryType } from './enums/territoryType';
 
 
 @Component({
@@ -29,7 +28,6 @@ export class AppComponent implements OnInit, OnDestroy {
   panZoomConfig: PanZoomConfig = new PanZoomConfig();
   private panZoomAPI!: PanZoomAPI;
   private apiSubscription!: Subscription;
-  mode: AppMode = AppMode.Normal;
   hasLoaded = false;
   title = 'fta4-ang-map'
 
@@ -39,10 +37,11 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('drawer') drawer?: { open: () => void; close: () => void; };
   @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
 
-  pins: Pin[] = [];
-  places: Place[] = [];
-  activePlace: Place = new Place();
-  activePin: Pin = new Pin();
+  activeStar!: Star;
+  activePolity!: Polity;
+  stars: Star[] = [];
+  territories : Territory[] = [];
+  polities : Polity[] = [];
   drawerMode: DrawerMode = DrawerMode.Closed;
 
   points: Point[] = [];
@@ -50,7 +49,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   pointBuffer: Point = new Point();
 
-  constructor(public dialog: MatDialog, private db: AngularFireDatabase){}
+  constructor(
+      public dialog: MatDialog,
+      private http: HttpClient
+    ){}
 
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
@@ -61,14 +63,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.panZoomConfig.invertMouseWheel = true;
     this.panZoomConfig.initialZoomLevel = 4;
     
-    this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
-      this.places = places;
-      this.titleChild?.buildOptions();
-    });
-    this.db.list<Pin>('/pins').valueChanges().subscribe((pins: Pin[]) => {
-      this.pins = pins;
-      this.titleChild?.buildOptions();
-    });
+    this.readInFromDatabase();
 
     this.apiSubscription = this.panZoomConfig.api.subscribe( (api: PanZoomAPI) => this.panZoomAPI = api );
     for (const url of this.mapUrls) {
@@ -78,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = img.height;
           self.mapWidth = img.width;
-          self.scrollToPoint(-500, 80, false);
+          self.scrollToPoint(0, 0, false);
           self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
             for (let y = 0; y < self.mapHeight; y += this.resolution) {
@@ -110,15 +105,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }, 1500);
     }
     
-    console.log(x, y);
     const point = {
-      x: x,
-      y: y
+      x: -200,
+      y: 80
     };
     setTimeout(() => {
       this.panZoomAPI.detectContentDimensions();
       this.panZoomAPI.panToPoint(point);
-      console.log(point);
     }, (this.isOpen ? 0 : this.timeToOpen));
   }
 
@@ -134,55 +127,71 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  addMapPinClicked(): void {
-    switch (this.mode) {
-      case AppMode.Normal:
-        this.mode = AppMode.AddingPin;
-        break;
-      default:
-        this.mode = AppMode.Normal;
-        break;
-    }
-  }
-
-  addPlaceClicked(): void {
-    switch (this.mode) {
-      case AppMode.Normal:
-        this.mode = AppMode.AddingPlacePoint1;
-        break;
-      default:
-        this.mode = AppMode.Normal;
-        break;
-    }
-  }
-
-  openDrawerToPlace(key: string): void {
-    const matching = this.places.filter(a => a.key === key);
+  openDrawerToStar(key: string): void {
+    const matching = this.stars.filter(a => a.key === key);
     if (matching.length > 0 && this.drawer !== undefined) {
       this.drawer.open();
       this.isOpen = true;
-      this.activePlace = matching[0];
-      this.drawerMode = DrawerMode.Place;
-      this.scrollToPoint(this.activePlace.x, this.activePlace.y, true);
-      this.xStart = this.activePlace.xStart;
-      this.yStart = this.activePlace.yStart;
-      this.xEnd = this.activePlace.xEnd;
-      this.yEnd = this.activePlace.yEnd;
+      this.activeStar = matching[0];
+      this.drawerMode = DrawerMode.Star;
+      this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+      this.xStart = this.activeStar.xStart;
+      this.yStart = this.activeStar.yStart;
+      this.xEnd = this.activeStar.xEnd;
+      this.yEnd = this.activeStar.yEnd;
     }
   }
 
-  openDrawerToPin(key: string): void {
-    const matching = this.pins.filter(a => a.key === key);
+  openStar(key: string): void {
+    const matching = this.stars.filter(a => a.key === key);
+    if (matching.length > 0 && this.drawer !== undefined) {
+      this.activeStar = matching[0];
+      this.drawerMode = DrawerMode.Star;
+      this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+      this.xStart = this.activeStar.xStart;
+      this.yStart = this.activeStar.yStart;
+      this.xEnd = this.activeStar.xEnd;
+      this.yEnd = this.activeStar.yEnd;
+    }
+  }
+
+  openDrawerToPolity(key: string): void {
+    const matching = this.polities.filter(a => a.key === key);
     if (matching.length > 0 && this.drawer !== undefined) {
       this.drawer.open();
       this.isOpen = true;
-      this.activePin = matching[0];
-      this.drawerMode = DrawerMode.Pin;
-      this.scrollToPoint(this.activePin.x, this.activePin.y, true);
-      this.xStart = this.activePin.x - 30;
-      this.yStart = this.activePin.y - 90;
-      this.xEnd = this.activePin.x + 30;
-      this.yEnd = this.activePin.y - 5;
+      this.activePolity = matching[0];
+      this.drawerMode = DrawerMode.Polity;
+    }
+  }
+
+  openPolity(key: string): void {
+    const matching = this.polities.filter(a => a.key === key);
+    console.log(this.drawer);
+    if (matching.length > 0 && this.drawer !== undefined) {
+      this.activePolity = matching[0];
+      console.log(this.activePolity);
+      this.drawerMode = DrawerMode.Polity;
+      console.log(this.drawerMode);
+    }
+  }
+
+  openDrawerToTerritory(key: string): void {
+    const matching = this.territories.filter(a => a.key === key);    
+    if (matching.length > 0 && this.drawer !== undefined) {
+      const matchingTerritory = matching[0];
+      const matchingStars = this.stars.filter(a => a.key === matchingTerritory.hostStarKey);
+      if (matchingStars.length > 0 ) {
+        this.drawer.open();
+        this.isOpen = true;
+        this.activeStar = matchingStars[0];
+        this.drawerMode = DrawerMode.Star;
+        this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+        this.xStart = this.activeStar.xStart;
+        this.yStart = this.activeStar.yStart;
+        this.xEnd = this.activeStar.xEnd;
+        this.yEnd = this.activeStar.yEnd;
+      }
     }
   }
 
@@ -196,61 +205,111 @@ export class AppComponent implements OnInit, OnDestroy {
     }, this.timeToOpen);
   }
 
-  registerLocation(x: number, y: number) {
-    this.closeDrawer();
-    switch (this.mode) {
-      case AppMode.AddingPin:
-        this.openMapPinDialog(x, y);
-        break;
-      case AppMode.AddingPlacePoint1:
-        this.pointBuffer = { x, y };
-        this.mode = AppMode.AddingPlacePoint2;
-        break;
-      case AppMode.AddingPlacePoint2:
-        this.openMapPlaceDialog({ xStart: this.pointBuffer.x, yStart: this.pointBuffer.y, xEnd: x, yEnd: y});
-        break;
-      default:
-        break;
+  readInFromDatabase(){
+    //stars
+    this.fetchGoogleSheet('1u2EooPBVCUnKPOBBQBoLaX7pNoe0pu55PuqDsEcbjQ8', 'Stars')
+    .subscribe((csv: string) => {
+      var data = Papa.parse(csv, { header: true});
+      var stars = [];
+      for (let i = 0; i < data.data.length; i++) {
+        const element = data.data[i] as any;
+        const newStar = new Star();
+        newStar.key = element["Name"];
+        newStar.name = element["Name"];
+        newStar.xStart = Number(element["xStart"]);
+        newStar.yStart = Number(element["yStart"]);
+        newStar.xEnd = Number(element["xEnd"]);
+        newStar.yEnd = Number(element["yEnd"]);
+        newStar.x = (newStar.xStart + newStar.xEnd)/2.0
+        newStar.y = (newStar.yStart + newStar.yEnd)/2.0
+        stars.push(newStar);
+      }
+      this.stars = stars;
+      this.titleChild?.buildOptions();
+    });
+
+    //polities
+    this.fetchGoogleSheet('1u2EooPBVCUnKPOBBQBoLaX7pNoe0pu55PuqDsEcbjQ8', 'Polities')
+    .subscribe((csv: string) => {
+      var data = Papa.parse(csv, { header: true});
+      var polities = [];
+      for (let j = 0; j < data.data.length; j++) {
+        const element = data.data[j] as any;
+        const newPolity = new Polity();
+        newPolity.key = element["Nation Name"];
+        newPolity.name = element["Nation Name"];
+        newPolity.player = element["Player"];
+        newPolity.gdp = Number(element["Wealth"].replace("$", "").replace(",", ""));
+        newPolity.di = Number(element["DI"].replace(",", ""));
+        newPolity.bloc = element["Bloc"];
+        polities.push(newPolity);
+      }
+      this.polities = polities;
+      this.titleChild?.buildOptions();
+    });
+
+    //territories
+    this.fetchGoogleSheet('1u2EooPBVCUnKPOBBQBoLaX7pNoe0pu55PuqDsEcbjQ8', 'Territories')
+    .subscribe((csv: string) => {
+      var data = Papa.parse(csv, { header: true});
+      var territories = [];
+      for (let k = 0; k < data.data.length; k++) {
+        const element = data.data[k] as any;
+        for (let l = 0; l < Object.keys(element).length; l++) {
+          const prop = Object.keys(element)[l];
+          
+          if (prop !== "Nation Name") {
+            
+            var type = prop.slice(prop.length - 1);
+            var starKey = prop.slice(0, prop.length - 2);
+            var count = Number(element[prop]);            
+            if (count !== 0) {
+              var actualCount = Number(count);              
+              for (let m = 0; m < actualCount; m++) {
+                const newTerritory = new Territory();
+                newTerritory.ownerPolityKey = element["Nation Name"]   
+                newTerritory.hostStarKey = starKey
+                newTerritory.key = starKey + element["Nation Name"] + type + String(m);
+                newTerritory.name = element["Nation Name"] + " " + starKey + " " + (type === "T" ? "Territory" : type === "E" ? "Entanglement" : "Quagmire") + " " + String(m + 1);
+                newTerritory.type = type === "T" ? TerritoryType.Territory : type === "E" ? TerritoryType.Entanglement : TerritoryType.Quagmire;
+                territories.push(newTerritory);
+              }
+            }
+          }
+        }
+      }
+      this.territories = territories;
+      this.titleChild?.buildOptions();
+    });
+  }
+
+  bestFit(record: any, allPolities: Polity[]) {
+    const pureMatch = allPolities.find(r => record['Formal Name (for map)'] === r.name);
+    if (pureMatch !== undefined) {
+      return pureMatch;
     }
+    return undefined;
   }
 
-  openMapPinDialog(x: number, y: number) {
-    const dialogRef = this.dialog.open(AddPinComponent, {
-      width: '600px',
-      data: { x, y }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.mode = AppMode.Normal;
-      if (result === undefined) {
-        return;
-      }
-      this.db.list('/pins').push(result);
-    });
-  }
-
-  openMapPlaceDialog(square: Square) {
-    const dialogRef = this.dialog.open(AddPlaceComponent, {
-      width: '600px',
-      data: square
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.mode = AppMode.Normal;
-      if (result === undefined) {
-        return;
-      }
-      this.db.list('/places').push(result);
-    });
-  }
-
-  pinStyle(pin: Pin): object {
-    return {
-      position: 'absolute',
-      top: (pin.y - 90) + 'px',
-      left: (pin.x - 30) + 'px',
-      'z-index': 10
+  fetchGoogleSheet(id: string, page: string): Observable<string> {
+    const options: {
+        headers?: HttpHeaders;
+        observe?: 'body';
+        params?: HttpParams;
+        reportProgress?: boolean;
+        responseType: 'text';
+        withCredentials?: boolean;
+    } = {
+        responseType: 'text'
     };
+
+    return this.http
+        .get('https://docs.google.com/spreadsheets/d/' + id + '/gviz/tq?tqx=out:csv&sheet=' + page, options)
+        .pipe(
+            map((file: string) => {
+                return file;
+            })
+        );
   }
 
   get highlightDimensionsCss(): object{
@@ -263,7 +322,7 @@ export class AppComponent implements OnInit, OnDestroy {
         'box-shadow': '0 0 0 100vmax rgba(0,0,0,0)'
      };
     }
-    const alpha = (this.scrollCountdown / 2300).toFixed(1);
+    const alpha = (this.scrollCountdown / 1200).toFixed(1);
     return {
        height: Math.abs(this.yEnd - this.yStart).toFixed(0) + 'px',
        width: Math.abs(this.xEnd - this.xStart).toFixed(0) + 'px',
@@ -271,33 +330,5 @@ export class AppComponent implements OnInit, OnDestroy {
        left: ((this.xStart ?? 0) * 1).toFixed(0) + 'px',
        'box-shadow': ('0 0 0 1000vmax rgba(0,0,0,' + alpha + ')')
     };
-  }
-
-  get mapPinButtonLabel(): string {
-    switch (this.mode) {
-      case AppMode.Normal:
-        return '    Add Pin';
-      case AppMode.AddingPin:
-        return '    Click on Map to Add Pin';
-      case AppMode.AddingPlacePoint1:
-      case AppMode.AddingPlacePoint2:
-        return '    Add Pin';
-      default:
-        return '';
-    }
-  }
-
-  get placeButtonLabel(): string {
-    switch (this.mode) {
-      case AppMode.Normal:
-        return '    Add Place';
-      case AppMode.AddingPin:
-        return '    Add Place';
-      case AppMode.AddingPlacePoint1:
-      case AppMode.AddingPlacePoint2:
-        return '    Click on Map twice to Add Place';
-      default:
-        return '';
-    }
   }
 }

@@ -53,59 +53,57 @@ export class TitleComponent implements OnInit {
   }
 
   optionClicked(option: Option): void {
-    if (option.type === OptionType.Pin) {
-      this.parent.openDrawerToPin(option.key);
+    if (option.type === OptionType.Star) {
+      this.parent.openDrawerToStar(option.key);
     }
-    if (option.type === OptionType.Place) {
-      this.parent.openDrawerToPlace(option.key);
+    if (option.type === OptionType.Polity) {
+      this.parent.openDrawerToPolity(option.key);
+    }
+    if (option.type === OptionType.Territory) {
+      this.parent.openDrawerToTerritory(option.key);
     }
     this.showAutoComplete = false;
   }
 
   buildOptions(): void {
-    if (this.parent.pins === undefined ||
-        this.parent.places === undefined) {
+    if (this.parent.stars === undefined ||
+        this.parent.polities === undefined ||
+        this.parent.territories === undefined) {
         return;
     }
     const newOptions = [];
-    for (const place of this.parent.places) {
+    for (const place of this.parent.stars) {
       newOptions.push({
         label: place.name,
-        fullSearchText: place.name + place.description,
+        fullSearchText: place.name,
         key: place.key,
-        type: OptionType.Place,
+        type: OptionType.Star,
         order: 0
       });
     }
-    for (const pin of this.parent.pins) {
+    for (const polity of this.parent.polities) {
       newOptions.push({
-        label: pin.name,
-        fullSearchText: pin.name + pin.description,
-        key: pin.key,
-        type: OptionType.Pin,
+        label: polity.name,
+        fullSearchText: polity.name,
+        key: polity.key,
+        type: OptionType.Polity,
         order: 1
       });
     }
+    for (const territory of this.parent.territories) {
+      newOptions.push({
+        label: territory.name,
+        fullSearchText: territory.name + territory.hostStarKey + territory.ownerPolityKey,
+        key: territory.key,
+        type: OptionType.Territory,
+        order: 2
+      });
+    }
+    
     this.options = newOptions;
   }
 
   clear(): void {
     this.searchFormControl.setValue('');
-  }
-
-  openAddMapPin(): void {
-    this.parent.addMapPinClicked();
-  }
-
-  openAddPlace(): void {
-    this.parent.addPlaceClicked();
-  }
-
-  get mapPinButtonLabel(): string {
-    return this.parent.mapPinButtonLabel;
-  }
-
-  get placeButtonLabel(): string {
-    return this.parent.placeButtonLabel;
   }
 }

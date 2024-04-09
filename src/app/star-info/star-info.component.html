@@ -1,0 +1,37 @@
+<mat-tab-group *ngIf="starInfo" mat-align-tabs="center">
+    <mat-tab label="{{starInfo.name}}">
+
+        <!-- <div *ngIf="starInfo.thumbnail && starInfo.thumbnail.length > 0" class="tab-content">
+            <img src="{{starInfo.thumbnail}}" width=480px class="thumbnail">
+        </div> -->
+
+        <div *ngIf="filteredTerritories && filteredTerritories.length > 0" class="title">
+            Territories In {{starInfo.name}}
+        </div>
+
+        <div *ngFor="let territory of filteredTerritories" class="tab-content">
+
+            <div>
+                <div class="fake-external-link-large" (click)="openPolity(territory.ownerPolityKey)">{{territory.name}}</div>
+            </div>
+
+            <!-- <div *ngIf="territory.thumbnail && territory.thumbnail.length > 0">
+                <img src="{{territory.thumbnail}}" width="480px" class="thumbnail">
+            </div> -->
+
+            <!-- <div>
+                {{shortened(territory.description, 200)}}
+            </div> -->
+
+            <div>
+                <mat-chip-list>
+                    <mat-chip color="primary" (click)="openPolity(territory.ownerPolityKey)" class="link-chip">
+                        Go to owner →
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+
+    </mat-tab>
+
+</mat-tab-group>

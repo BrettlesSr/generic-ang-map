@@ -1,5 +1,5 @@
 export enum DrawerMode {
     Closed = 0,
-    Pin = 1,
-    Place = 2
+    Star = 1,
+    Polity = 2
 }

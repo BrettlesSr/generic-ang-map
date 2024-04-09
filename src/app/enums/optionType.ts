@@ -1,4 +1,5 @@
 export enum OptionType {
-    Pin,
-    Place
+    Star,
+    Territory,
+    Polity
 }

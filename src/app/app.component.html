@@ -9,30 +9,31 @@
 <mat-drawer-container class="example-container" autosize>
 
   <mat-drawer #drawer class="sidenav-fixed" mode="side" position="end">
-    <app-place-info
-      *ngIf = "drawerMode == 2"
-      [info]="activePlace"
+    <app-star-info
+      *ngIf = "drawerMode === 1"
+      [starInfo]="activeStar"
+      [territories]="territories"
       [parent]="this">
-    </app-place-info>
-    <app-pin-info
-      *ngIf = "drawerMode == 1"
-      [info]="activePin"
+    </app-star-info>
+    <app-polity-info
+      *ngIf = "drawerMode === 2"
+      [polityInfo]="activePolity"
+      [territories]="territories"
       [parent]="this">
-    </app-pin-info>
+    </app-polity-info>
   </mat-drawer>
 
   <pan-zoom [hidden]="!hasLoaded" [config]="panZoomConfig">
     <div style="position: relative;">
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
       <map name="starmap">
-        <area *ngFor="let place of places" shape="rect" coords="{{place.xStart}}, {{place.yStart}}, {{place.xEnd}}, {{place.yEnd}}" alt="{{place.name}}" (click)="openDrawerToPlace(place.key)">
-        <area *ngFor="let point of points" shape="rect" coords="{{point.x}}, {{point.y}}, {{(point.x + this.resolution)}}, {{(point.y + this.resolution)}}" (click)="registerLocation((point.x + (this.resolution/2)), (point.y + (this.resolution/2)))">
+        <area *ngFor="let star of stars" shape="rect" coords="{{star.xStart}}, {{star.yStart}}, {{star.xEnd}}, {{star.yEnd}}" alt="{{star.name}}" (click)="openDrawerToStar(star.name)">
+        <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()"> 
       </map>
       <div
         class="highlight"
         [ngStyle]="highlightDimensionsCss">
       </div>
-      <img *ngFor="let pin of pins" src="{{pin.color}}" [ngStyle]="pinStyle(pin)" width="60" height="90" (click)="openDrawerToPin(pin.key)">
     </div>    
   </pan-zoom>
   
