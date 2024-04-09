@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.panZoomConfig.scalePerZoomLevel = 1.5;
     this.panZoomConfig.freeMouseWheel = false;
     this.panZoomConfig.invertMouseWheel = true;
-    this.panZoomConfig.initialZoomLevel = 3;
+    this.panZoomConfig.initialZoomLevel = 4;
     
     this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
       this.places = places;
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = img.height;
           self.mapWidth = img.width;
-          self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, true);
+          self.scrollToPoint(-500, 80, false);
           self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
             for (let y = 0; y < self.mapHeight; y += this.resolution) {
@@ -110,18 +110,16 @@ export class AppComponent implements OnInit, OnDestroy {
       }, 1500);
     }
     
-    // console.log(x, y);
-    // const zoom = this.panZoomAPI.model.zoomLevel;
-    // const adjustment = (1080 / zoom) - 110;
-    // const point = {
-    //   x: x * 1,// + adjustment,
-    //   y: y * 1
-    // };
-    // setTimeout(() => {
-    //   this.panZoomAPI.detectContentDimensions();
-    //   this.panZoomAPI.panToPoint(point);
-    //   console.log(point);
-    // }, (this.isOpen ? 0 : this.timeToOpen));
+    console.log(x, y);
+    const point = {
+      x: x,
+      y: y
+    };
+    setTimeout(() => {
+      this.panZoomAPI.detectContentDimensions();
+      this.panZoomAPI.panToPoint(point);
+      console.log(point);
+    }, (this.isOpen ? 0 : this.timeToOpen));
   }
 
   tickDownCountdown(): void {
