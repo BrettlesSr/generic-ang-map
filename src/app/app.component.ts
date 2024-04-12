@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { PanZoomConfig, PanZoomAPI } from 'ngx-panzoom';
 import { Observable, Subscription, map } from 'rxjs';
 import { DrawerMode } from './enums/drawerMode';
-import { Point } from './models/point';
 import { Territory } from './models/territory';
 import { Polity } from './models/polity';
 import { Star } from './models/star';
@@ -44,11 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
   polities : Polity[] = [];
   drawerMode: DrawerMode = DrawerMode.Closed;
 
-  points: Point[] = [];
-  resolution = 20;
-
-  pointBuffer: Point = new Point();
-
   constructor(
       public dialog: MatDialog,
       private http: HttpClient
@@ -57,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
     this.panZoomConfig.zoomLevels = 7;
-    this.panZoomConfig.neutralZoomLevel = 5;
+    this.panZoomConfig.neutralZoomLevel = 3;
     this.panZoomConfig.scalePerZoomLevel = 1.5;
     this.panZoomConfig.freeMouseWheel = false;
     this.panZoomConfig.invertMouseWheel = true;
@@ -75,11 +69,6 @@ export class AppComponent implements OnInit, OnDestroy {
           self.mapWidth = img.width;
           self.scrollToPoint(0, 0, false);
           self.hasLoaded = true;
-          for (let x = 0; x < self.mapWidth; x += this.resolution) {
-            for (let y = 0; y < self.mapHeight; y += this.resolution) {
-              self.points.push({x, y});
-            }
-          }
         }
       }
       img.src = url;
@@ -134,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isOpen = true;
       this.activeStar = matching[0];
       this.drawerMode = DrawerMode.Star;
-      this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+      //this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
       this.xStart = this.activeStar.xStart;
       this.yStart = this.activeStar.yStart;
       this.xEnd = this.activeStar.xEnd;
@@ -147,7 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (matching.length > 0 && this.drawer !== undefined) {
       this.activeStar = matching[0];
       this.drawerMode = DrawerMode.Star;
-      this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+      this.scrollToPoint(this.activeStar.x, this.activeStar.y, false);
       this.xStart = this.activeStar.xStart;
       this.yStart = this.activeStar.yStart;
       this.xEnd = this.activeStar.xEnd;
@@ -226,6 +215,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.stars = stars;
       this.titleChild?.buildOptions();
+      console.log(this.stars);
     });
 
     //polities

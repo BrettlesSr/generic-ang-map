@@ -9,11 +9,29 @@
             Territories In {{starInfo.name}}
         </div>
 
-        <div *ngFor="let territory of filteredTerritories" class="tab-content">
+        <div *ngFor="let polityStarDatum of polityStarData" class="tab-content">
 
-            <div>
-                <div class="fake-external-link-large" (click)="openPolity(territory.ownerPolityKey)">{{territory.name}}</div>
+            <div class="holding">
+                <div class="non-link left" >{{polityStarDatum.polityName}}</div>
+                <mat-chip-list class="right">
+                    <mat-chip color="primary" class="link-chip">
+                        {{polityStarDatum.polityBlocName}}
+                    </mat-chip>
+                </mat-chip-list>
             </div>
+
+            <table>
+                <tr>
+                    <th>Territories</th>
+                    <th>Entanglements</th>
+                    <th>Quagmires</th>
+                </tr>
+                <tr>
+                    <td>{{polityStarDatum.territoryCount}}</td>
+                    <td>{{polityStarDatum.entanglementCount}}</td>
+                    <td>{{polityStarDatum.quagmireCount}}</td>
+                </tr>
+            </table>
 
             <!-- <div *ngIf="territory.thumbnail && territory.thumbnail.length > 0">
                 <img src="{{territory.thumbnail}}" width="480px" class="thumbnail">
@@ -25,7 +43,7 @@
 
             <div>
                 <mat-chip-list>
-                    <mat-chip color="primary" (click)="openPolity(territory.ownerPolityKey)" class="link-chip">
+                    <mat-chip color="primary" (click)="openPolity(polityStarDatum.polityKey)" class="link-chip">
                         Go to owner →
                     </mat-chip>
                 </mat-chip-list>
