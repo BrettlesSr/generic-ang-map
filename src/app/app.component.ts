@@ -67,7 +67,6 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = img.height;
           self.mapWidth = img.width;
-          self.panZoomAPI.centerContent();
           self.hasLoaded = true;
         }
       }
