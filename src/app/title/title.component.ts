@@ -90,15 +90,15 @@ export class TitleComponent implements OnInit {
         order: 1
       });
     }
-    for (const territory of this.parent.territories) {
-      newOptions.push({
-        label: territory.name,
-        fullSearchText: territory.name + territory.hostStarKey + territory.ownerPolityKey,
-        key: territory.key,
-        type: OptionType.Territory,
-        order: 2
-      });
-    }
+    // for (const territory of this.parent.territories) {
+    //   newOptions.push({
+    //     label: territory.name,
+    //     fullSearchText: territory.name + territory.hostStarKey + territory.ownerPolityKey,
+    //     key: territory.key,
+    //     type: OptionType.Territory,
+    //     order: 2
+    //   });
+    // }
     
     this.options = newOptions;
   }

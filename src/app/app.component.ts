@@ -55,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.panZoomConfig.scalePerZoomLevel = 1.5;
     this.panZoomConfig.freeMouseWheel = false;
     this.panZoomConfig.invertMouseWheel = true;
-    this.panZoomConfig.initialZoomLevel = 4;
+    this.panZoomConfig.initialZoomLevel = 2;
     
     this.readInFromDatabase();
 
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
         img.onload = (event: any) => {
           self.mapHeight = img.height;
           self.mapWidth = img.width;
-          self.scrollToPoint(0, 0, false);
+          self.panZoomAPI.centerContent();
           self.hasLoaded = true;
         }
       }
@@ -95,8 +95,8 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     
     const point = {
-      x: -200,
-      y: 80
+      x: x,
+      y: y
     };
     setTimeout(() => {
       this.panZoomAPI.detectContentDimensions();
@@ -123,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.isOpen = true;
       this.activeStar = matching[0];
       this.drawerMode = DrawerMode.Star;
-      //this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
+      this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
       this.xStart = this.activeStar.xStart;
       this.yStart = this.activeStar.yStart;
       this.xEnd = this.activeStar.xEnd;
@@ -320,5 +320,16 @@ export class AppComponent implements OnInit, OnDestroy {
        left: ((this.xStart ?? 0) * 1).toFixed(0) + 'px',
        'box-shadow': ('0 0 0 1000vmax rgba(0,0,0,' + alpha + ')')
     };
+  }
+
+  get activeStars(): Star[] {
+    console.log(this.activeStar.key);
+    if (this.activeStar.key === "Earth" || this.activeStar.key === "Solar") {
+      console.log(this.stars);
+      return this.stars.filter(s => s.key === "Earth" || s.key === "Solar");
+    }
+    else {
+      return [ this.activeStar ];
+    }
   }
 }

@@ -1,26 +1,26 @@
-<mat-tab-group *ngIf="starInfo" mat-align-tabs="center">
-    <mat-tab label="{{starInfo.name}}">
+<mat-tab-group *ngIf="presentStarInfo" mat-align-tabs="center">
+    <mat-tab *ngFor="let starInfo of presentStarInfo" label="{{starInfo.starName}}">
 
         <!-- <div *ngIf="starInfo.thumbnail && starInfo.thumbnail.length > 0" class="tab-content">
             <img src="{{starInfo.thumbnail}}" width=480px class="thumbnail">
         </div> -->
 
-        <div *ngIf="filteredTerritories && filteredTerritories.length > 0" class="title">
-            Territories In {{starInfo.name}}
+        <div *ngIf="starInfo.polityStarData && starInfo.polityStarData.length > 0" class="title">
+            Territories In {{starInfo.starName}} System
         </div>
 
-        <div *ngFor="let polityStarDatum of polityStarData" class="tab-content">
+        <div *ngFor="let polityStarDatum of starInfo.polityStarData" class="tab-content">
 
             <div class="holding">
                 <div class="non-link left" >{{polityStarDatum.polityName}}</div>
-                <mat-chip-list class="right">
-                    <mat-chip color="primary" class="link-chip">
+                <mat-chip-list class="right" *ngIf="polityStarDatum.polityBlocName.length > 0">
+                    <mat-chip [style.background-color]="getBlocColour(polityStarDatum.polityBlocName)">
                         {{polityStarDatum.polityBlocName}}
                     </mat-chip>
                 </mat-chip-list>
             </div>
 
-            <table>
+            <table class="data-table">
                 <tr>
                     <th>Territories</th>
                     <th>Entanglements</th>
@@ -41,7 +41,7 @@
                 {{shortened(territory.description, 200)}}
             </div> -->
 
-            <div>
+            <div style="padding-left: 10px;">
                 <mat-chip-list>
                     <mat-chip color="primary" (click)="openPolity(polityStarDatum.polityKey)" class="link-chip">
                         Go to owner →

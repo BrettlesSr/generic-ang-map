@@ -11,7 +11,7 @@
   <mat-drawer #drawer class="sidenav-fixed" mode="side" position="end">
     <app-star-info
       *ngIf = "drawerMode === 1"
-      [starInfo]="activeStar"
+      [stars]="activeStars"
       [territories]="territories"
       [polities]="polities"
       [parent]="this">
