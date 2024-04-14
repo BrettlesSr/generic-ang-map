@@ -99,7 +99,7 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     setTimeout(() => {
       this.panZoomAPI.detectContentDimensions();
-      this.panZoomAPI.panToPoint(point);
+      //this.panZoomAPI.panToPoint(point);
     }, (this.isOpen ? 0 : this.timeToOpen));
   }
 
