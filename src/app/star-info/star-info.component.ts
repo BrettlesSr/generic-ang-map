@@ -39,6 +39,7 @@ export class StarInfoComponent implements OnChanges {
       var newInfo = new StarInfo();
       newInfo.starKey = hostStarKey;
       newInfo.starName = star.name;
+      newInfo.planetMap = star.planetMap;
 
       var territories  = this.territories.filter(t => t.hostStarKey === hostStarKey);
       var polityStarData: PolityStarData[] = [];

@@ -1,9 +1,9 @@
 <mat-tab-group *ngIf="presentStarInfo" mat-align-tabs="center">
     <mat-tab *ngFor="let starInfo of presentStarInfo" label="{{starInfo.starName}}">
 
-        <!-- <div *ngIf="starInfo.thumbnail && starInfo.thumbnail.length > 0" class="tab-content">
-            <img src="{{starInfo.thumbnail}}" width=480px class="thumbnail">
-        </div> -->
+        <div *ngIf="starInfo.planetMap && starInfo.planetMap.length > 0" class="tab-content">
+            <img src="{{starInfo.planetMap}}" width=480px class="thumbnail">
+        </div>
 
         <div *ngIf="starInfo.polityStarData && starInfo.polityStarData.length > 0" class="title">
             Territories In {{starInfo.starName}} System

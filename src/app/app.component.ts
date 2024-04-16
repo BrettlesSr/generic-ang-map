@@ -136,6 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const matching = this.stars.filter(a => a.key === key);
     if (matching.length > 0 && this.drawer !== undefined) {
       this.activeStar = matching[0];
+      this.activeStars = this.getActiveStars();
       this.drawerMode = DrawerMode.Star;
       this.scrollToPoint(this.activeStar.x, this.activeStar.y, false);
       this.xStart = this.activeStar.xStart;
@@ -204,6 +205,8 @@ export class AppComponent implements OnInit, OnDestroy {
         const newStar = new Star();
         newStar.key = element["Name"];
         newStar.name = element["Name"];
+        newStar.planetMap = element["planetMap"];
+        newStar.spaceMap = element["spaceMap"];
         newStar.xStart = Number(element["xStart"]);
         newStar.yStart = Number(element["yStart"]);
         newStar.xEnd = Number(element["xEnd"]);
@@ -323,8 +326,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getActiveStars(): Star[] {
-    if (this.activeStar.key === "Earth" || this.activeStar.key === "Solar") {
-      return this.stars.filter(s => s.key === "Earth" || s.key === "Solar");
+    if (this.activeStar.key === "Solar") {
+      const earth = this.stars.filter(s => s.key === "Earth")[0];
+      const solar = this.stars.filter(s => s.key === "Solar")[0];
+      return [ solar, earth ]
+    }
+    else if (this.activeStar.key === "Earth") {
+      const earth = this.stars.filter(s => s.key === "Earth")[0];
+      const solar = this.stars.filter(s => s.key === "Solar")[0];
+      return [ earth, solar ]
     }
     else {
       return [ this.activeStar ];

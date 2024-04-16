@@ -36,6 +36,6 @@ getTerritoryDescriptor(territory: Territory): string {
 }
 
 openStar(star: string) {
-    this.parent.openStar(star);
+  this.parent.openStar(star);
 }
 }
