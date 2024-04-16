@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppComponent } from '../app.component';
 import { Star } from '../models/star';
@@ -13,7 +13,7 @@ import { StarInfo } from '../models/starInfo';
   templateUrl: './star-info.component.html',
   styleUrls: ['./star-info.component.scss']
 })
-export class StarInfoComponent implements OnInit {
+export class StarInfoComponent implements OnChanges {
   constructor(public dialog: MatDialog) {}
 
   @Input() stars!: Star[];
@@ -23,9 +23,8 @@ export class StarInfoComponent implements OnInit {
 
   presentStarInfo: StarInfo[] = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.presentStarInfo = this.getStarInfo();
-    console.log(this.presentStarInfo);
   }
 
   getFilteredTerritories(hostStarKey: string): Territory[] {

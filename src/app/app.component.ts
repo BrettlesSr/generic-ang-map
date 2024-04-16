@@ -37,6 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
 
   activeStar!: Star;
+  activeStars!: Star[];
   activePolity!: Polity;
   stars: Star[] = [];
   territories : Territory[] = [];
@@ -121,6 +122,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.drawer.open();
       this.isOpen = true;
       this.activeStar = matching[0];
+      this.activeStars = this.getActiveStars();
       this.drawerMode = DrawerMode.Star;
       this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
       this.xStart = this.activeStar.xStart;
@@ -155,12 +157,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openPolity(key: string): void {
     const matching = this.polities.filter(a => a.key === key);
-    console.log(this.drawer);
     if (matching.length > 0 && this.drawer !== undefined) {
       this.activePolity = matching[0];
-      console.log(this.activePolity);
       this.drawerMode = DrawerMode.Polity;
-      console.log(this.drawerMode);
     }
   }
 
@@ -173,6 +172,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.drawer.open();
         this.isOpen = true;
         this.activeStar = matchingStars[0];
+        this.activeStars = this.getActiveStars();
         this.drawerMode = DrawerMode.Star;
         this.scrollToPoint(this.activeStar.x, this.activeStar.y, true);
         this.xStart = this.activeStar.xStart;
@@ -214,7 +214,6 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.stars = stars;
       this.titleChild?.buildOptions();
-      console.log(this.stars);
     });
 
     //polities
@@ -312,19 +311,19 @@ export class AppComponent implements OnInit, OnDestroy {
      };
     }
     const alpha = (this.scrollCountdown / 1200).toFixed(1);
+    const topPoint = Math.min(this.yStart ?? 0, this.yEnd ?? 0) * 1.0;
+    const leftPoint = Math.min(this.xStart ?? 0, this.xEnd ?? 0) * 1.0;
     return {
        height: Math.abs(this.yEnd - this.yStart).toFixed(0) + 'px',
        width: Math.abs(this.xEnd - this.xStart).toFixed(0) + 'px',
-       top: ((this.yStart ?? 0) * 1).toFixed(0) + 'px',
-       left: ((this.xStart ?? 0) * 1).toFixed(0) + 'px',
+       top: topPoint.toFixed(0) + 'px',
+       left: leftPoint.toFixed(0) + 'px',
        'box-shadow': ('0 0 0 1000vmax rgba(0,0,0,' + alpha + ')')
     };
   }
 
-  get activeStars(): Star[] {
-    console.log(this.activeStar.key);
+  getActiveStars(): Star[] {
     if (this.activeStar.key === "Earth" || this.activeStar.key === "Solar") {
-      console.log(this.stars);
       return this.stars.filter(s => s.key === "Earth" || s.key === "Solar");
     }
     else {
