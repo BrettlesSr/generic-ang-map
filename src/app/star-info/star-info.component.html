@@ -1,8 +1,9 @@
 <mat-tab-group *ngIf="presentStarInfo" mat-align-tabs="center">
     <mat-tab *ngFor="let starInfo of presentStarInfo" label="{{starInfo.starName}}">
 
-        <div *ngIf="starInfo.planetMap && starInfo.planetMap.length > 0" class="tab-content">
+        <div *ngIf="starInfo.planetMap && starInfo.planetMap.length > 0" class="tab-content image-holder" (click)="openSubMap(starInfo.planetMap, starInfo.starName)">
             <img src="{{starInfo.planetMap}}" width=480px class="thumbnail">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/490px-Magnifying_glass_icon.svg.png" width="50px" class="image-item">
         </div>
 
         <div *ngIf="starInfo.polityStarData && starInfo.polityStarData.length > 0" class="title">

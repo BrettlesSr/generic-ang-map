@@ -1,0 +1,19 @@
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+    <mat-icon class="close-icon">close</mat-icon>
+  </button>
+<h1 mat-dialog-title 
+cdkDrag
+[cdkDragFreeDragPosition]="dragPosition"
+cdkDragRootElement=".cdk-overlay-pane" 
+cdkDragHandle>
+{{subMapModalData.subMapTitle}}
+</h1>
+<div mat-dialog-content>
+    <div class="container">
+        <pan-zoom [hidden]="!hasLoaded"  [config]="panZoomConfig">
+            <div style="position: relative;">
+                <img src="{{subMapModalData.subMapUrl}}" width="{{mapWidth}}" height="{{mapHeight}}">
+            </div>    
+        </pan-zoom>  
+    </div>
+</div>

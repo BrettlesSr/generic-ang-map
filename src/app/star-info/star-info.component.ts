@@ -116,6 +116,10 @@ export class StarInfoComponent implements OnChanges {
     this.parent.openPolity(polity);
   }
 
+  openSubMap(url: string, title: string) {
+    this.parent.openSubMap(url, title);
+  }
+
   getBlocColour(bloc: string): string {
     switch (bloc) {
       case "ViSTA":

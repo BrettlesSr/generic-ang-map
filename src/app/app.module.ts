@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatIconModule} from '@angular/material/icon';
@@ -23,6 +24,7 @@ import { NgxPanZoomModule } from 'ngx-panzoom';
 import { TitleComponent } from './title/title.component';
 import { PolityInfoComponent } from './polity-info/polity-info.component';
 import { StarInfoComponent } from './star-info/star-info.component';
+import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { StarInfoComponent } from './star-info/star-info.component';
     TitleComponent,
     PolityInfoComponent,
     StarInfoComponent,
-    ArticlePipe
+    ArticlePipe,
+    SubMapModalComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,8 @@ import { StarInfoComponent } from './star-info/star-info.component';
     MatInputModule,
     MatButtonModule,
     MatTabsModule,
-    MatChipsModule
+    MatChipsModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -3,6 +3,16 @@
     margin-bottom: 15px;
 }
 
+.image-holder {
+    position: relative;
+}
+
+.image-holder .image-item {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
 .title {
     font-size: large;
     margin: 10px;

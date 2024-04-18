@@ -9,6 +9,7 @@ import { Star } from './models/star';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as Papa from 'papaparse';
 import { TerritoryType } from './enums/territoryType';
+import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
 
 
 @Component({
@@ -339,5 +340,13 @@ export class AppComponent implements OnInit, OnDestroy {
     else {
       return [ this.activeStar ];
     }
+  }
+
+  openSubMap(subMapUrl: string, subMapTitle: string): void {
+    this.dialog.open(SubMapModalComponent, {
+      width: '1800px',
+      height: '900px',
+      data: { subMapUrl, subMapTitle }
+    });
   }
 }
