@@ -62,6 +62,9 @@ export class TitleComponent implements OnInit {
     if (option.type === OptionType.Territory) {
       this.parent.openDrawerToTerritory(option.key);
     }
+    if (option.type === OptionType.Npc) {
+      this.parent.openDrawerToStar(option.key);
+    }
     this.showAutoComplete = false;
   }
 
@@ -90,16 +93,16 @@ export class TitleComponent implements OnInit {
         order: 1
       });
     }
-    // for (const territory of this.parent.territories) {
-    //   newOptions.push({
-    //     label: territory.name,
-    //     fullSearchText: territory.name + territory.hostStarKey + territory.ownerPolityKey,
-    //     key: territory.key,
-    //     type: OptionType.Territory,
-    //     order: 2
-    //   });
-    // }
-    
+    for (const npc of this.parent.npcs) {
+      newOptions.push({
+        label: npc.name,
+        fullSearchText: npc.name + npc.location + npc.notes,
+        key: npc.starName,
+        type: OptionType.Npc,
+        order: 2
+      });
+    }
+
     this.options = newOptions;
   }
 

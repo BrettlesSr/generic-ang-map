@@ -3,8 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AppComponent } from '../app.component';
 import { Star } from '../models/star';
 import { Territory } from '../models/territory';
-import { PolityStarData } from '../models/polityStarData';
+import { NpcStarData, PolityStarData } from '../models/polityStarData';
 import { Polity } from '../models/polity';
+import { Npc } from '../models/npc';
 import { TerritoryType } from '../enums/territoryType';
 import { StarInfo } from '../models/starInfo';
 
@@ -20,6 +21,7 @@ export class StarInfoComponent implements OnChanges {
   @Input() parent!: AppComponent;
   @Input() territories!: Territory[];
   @Input() polities!: Polity[];
+  @Input() npcs!: Npc[];
 
   presentStarInfo: StarInfo[] = [];
 
@@ -29,6 +31,10 @@ export class StarInfoComponent implements OnChanges {
 
   getFilteredTerritories(hostStarKey: string): Territory[] {
     return this.territories.filter(t => t.hostStarKey === hostStarKey);
+  }
+
+  openPolityByPlayer(player: string): void {
+    this.parent.openPolityByPlayer(player);
   }
 
   getStarInfo(): StarInfo[] {
@@ -104,11 +110,43 @@ export class StarInfoComponent implements OnChanges {
         else {
           return 0;
         }})
-
-
         newInfo.polityStarData = polityStarData;
+
+        var npcs = this.npcs.filter(t => t.starName === hostStarKey);
+        var npcStarData: NpcStarData[] = [];
+        for (let k = 0; k < npcs.length; k++) {
+          const npc = npcs[k];
+          var newNpcStarData = new NpcStarData();
+          newNpcStarData.npcKey = npc.key;
+          newNpcStarData.npcName = npc.name;
+          newNpcStarData.npcBlocName = npc.bloc;
+          newNpcStarData.location = npc.location;
+          newNpcStarData.notes = npc.notes;
+          newNpcStarData.players = npc.playerNames;
+          newNpcStarData.starKey = npc.starName;
+          npcStarData.push(newNpcStarData);          
+        }
+        npcStarData.sort((a, b) => {
+          if (a.npcBlocName < b.npcBlocName) {
+            return -1;
+          }
+          else if (a.npcBlocName > b.npcBlocName) {
+            return 1;
+          }
+          else if (a.npcName < b.npcName) {
+            return -1;
+          }
+          else if (a.npcName > b.npcName) {
+            return 1;
+          }
+          else {
+            return 0;
+          }})
+        newInfo.npcStarData = npcStarData;
+
         output.push(newInfo);
       }
+
     return output;
   }
 

@@ -1,5 +1,6 @@
 export enum OptionType {
     Star,
     Territory,
-    Polity
+    Polity,
+    Npc
 }

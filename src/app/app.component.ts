@@ -10,6 +10,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import * as Papa from 'papaparse';
 import { TerritoryType } from './enums/territoryType';
 import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
+import { Npc } from './models/npc';
 
 
 @Component({
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   stars: Star[] = [];
   territories : Territory[] = [];
   polities : Polity[] = [];
+  npcs : Npc[] = [];
   drawerMode: DrawerMode = DrawerMode.Closed;
 
   constructor(
@@ -185,6 +187,27 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  openPolityByPlayer(player: string): void {
+    var matching = this.polities.filter(a => a.player.toLowerCase() === player.toLowerCase());
+    if (matching.length > 0 && this.drawer !== undefined) {
+      this.activePolity = matching[0];
+      this.drawerMode = DrawerMode.Polity;
+      return;
+    }
+    matching = this.polities.filter(a => a.key.toLowerCase() === player.toLowerCase());
+    if (matching.length > 0 && this.drawer !== undefined) {
+      this.activePolity = matching[0];
+      this.drawerMode = DrawerMode.Polity;
+      return;
+    }
+    matching = this.polities.filter(a => a.name.toLowerCase() === player.toLowerCase());
+    if (matching.length > 0 && this.drawer !== undefined) {
+      this.activePolity = matching[0];
+      this.drawerMode = DrawerMode.Polity;
+      return;
+    }
+  }
+
   closeDrawer(): void {
     if (this.drawer !== undefined) {
       this.drawer.close();
@@ -271,6 +294,29 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       this.territories = territories;
+      this.titleChild?.buildOptions();
+    });
+
+    //npcs
+    this.fetchGoogleSheet('1u2EooPBVCUnKPOBBQBoLaX7pNoe0pu55PuqDsEcbjQ8', 'NPCs')
+    .subscribe((csv: string) => {
+      var data = Papa.parse(csv, { header: true});
+      var npcs = [];
+      for (let j = 0; j < data.data.length; j++) {
+        const element = data.data[j] as any;
+        const newNpc = new Npc();
+        newNpc.key = element["NPC Name"];
+        newNpc.name = element["NPC Name"];
+        newNpc.starName = element["Primary World"];
+        newNpc.location = element["Location"];
+        newNpc.bloc = element["Bloc (if any)"];
+        newNpc.notes = element["Notes"];
+        newNpc.playerNames = [ element["Primary Player Affiliation"], element["Other Player 1"], element["Other Player 2"], element["Other Player 3"], element["Other Player 4"], element["Other Player 5"] ]
+                                .filter(x => x && x.length > 0);
+        
+        npcs.push(newNpc);
+      }
+      this.npcs = npcs;
       this.titleChild?.buildOptions();
     });
   }

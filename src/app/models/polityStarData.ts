@@ -8,3 +8,14 @@ export class PolityStarData {
     entanglementCount: number = 0;
     quagmireCount: number = 0;
 }
+
+export class NpcStarData {
+    npcKey!: string;
+    starKey!: string;
+
+    npcName!: string;
+    npcBlocName!: string;
+    location!: string;
+    players: string[] = [];
+    notes!: string;
+}

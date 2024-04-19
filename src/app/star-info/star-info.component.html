@@ -51,6 +51,38 @@
             </div>
         </div>
 
+        <div *ngIf="starInfo.npcStarData && starInfo.npcStarData.length > 0" class="title">
+            NPCs In {{starInfo.starName}} System
+        </div>
+
+        <div *ngFor="let npcStarDatum of starInfo.npcStarData" class="tab-content">
+
+            <div class="holding">
+                <div class="non-link left" >{{npcStarDatum.npcName}}</div>
+                <mat-chip-list class="right" *ngIf="npcStarDatum.npcBlocName.length > 0">
+                    <mat-chip [style.background-color]="getBlocColour(npcStarDatum.npcBlocName)">
+                        {{npcStarDatum.npcBlocName}}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+
+            <!-- <div *ngIf="territory.thumbnail && territory.thumbnail.length > 0">
+                <img src="{{territory.thumbnail}}" width="480px" class="thumbnail">
+            </div> -->
+
+            <div>
+                <b>{{npcStarDatum.location}}</b> - {{npcStarDatum.notes}}
+            </div>
+
+            <div style="padding-left: 10px;">
+                <mat-chip-list>
+                    <mat-chip *ngFor="let player of npcStarDatum.players" color="primary" (click)="openPolityByPlayer(player)" class="link-chip">
+                        {{player}}
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+
     </mat-tab>
 
 </mat-tab-group>
