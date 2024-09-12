@@ -28,10 +28,11 @@
   <pan-zoom [hidden]="!hasLoaded" [config]="panZoomConfig">
     <div style="position: relative;">
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
-      <!-- <map name="starmap">
-        <area *ngFor="let star of stars" shape="rect" coords="{{star.xStart}}, {{star.yStart}}, {{star.xEnd}}, {{star.yEnd}}" alt="{{star.name}}" (click)="openDrawerToStar(star.name)">
-        <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()">
-      </map> -->
+      <map name="starmap">
+        <area *ngFor="let star of surveyStars" shape="circle" coords="{{star.x}}, {{star.y}}, {{star.radius}}" (mouseover)="hoverStar(star)" (mouseleave)="unhoverStar()">
+        <!-- <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()"> -->
+      </map>
+      <img *ngFor="let star of surveyStars" class="hoverImage" src="{{star.imageLink}}" [ngStyle]="hoverImageStyleObject(star)" (mouseover)="hoverStar(star)" (mouseleave)="unhoverStar()">
       <div
         class="highlight"
         [ngStyle]="highlightDimensionsCss">

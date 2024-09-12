@@ -11,6 +11,7 @@ import * as Papa from 'papaparse';
 import { TerritoryType } from './enums/territoryType';
 import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
 import { Npc } from './models/npc';
+import { SurveyStar } from './models/surveyStar';
 
 
 @Component({
@@ -39,9 +40,11 @@ export class AppComponent implements OnInit, OnDestroy {
   // @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
 
   activeStar!: Star;
+  activeSurveyStar: SurveyStar | null = null;
   activeStars!: Star[];
   activePolity!: Polity;
   stars: Star[] = [];
+  surveyStars: SurveyStar[] = [];
   territories : Territory[] = [];
   polities : Polity[] = [];
   npcs : Npc[] = [];
@@ -75,6 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       img.src = url;
+      this.scrollToPoint(-600, 50, false)
     }
   }
 
@@ -103,7 +107,7 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     setTimeout(() => {
       this.panZoomAPI.detectContentDimensions();
-      //this.panZoomAPI.panToPoint(point);
+      this.panZoomAPI.panToPoint(point);
     }, (this.isOpen ? 0 : this.timeToOpen));
   }
 
@@ -219,6 +223,25 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   readInFromDatabase(){
+    //hover images
+    this.fetchGoogleSheet('1HUDbWoPYLDZGy8MHq2eX5dZ8vSachoXbydvFBbwDgFE', 'Stars')
+    .subscribe((csv: string) => {
+      var data = Papa.parse(csv, { header: true});
+      var surveyStars = [];
+      for (let i = 0; i < data.data.length; i++) {
+        const element = data.data[i] as any;
+        const newStar = new SurveyStar();
+        newStar.x = Number(element["x"]);
+        newStar.y = Number(element["y"]);
+        newStar.radius = Number(element["radius"]);
+        newStar.imageLink = element["imageLink"]
+        newStar.embeddedLink = element["embeddedLink"]
+        surveyStars.push(newStar);
+      }
+      this.surveyStars = surveyStars;
+      console.log(this.surveyStars)
+    });
+
     //stars
     this.fetchGoogleSheet('1u2EooPBVCUnKPOBBQBoLaX7pNoe0pu55PuqDsEcbjQ8', 'Stars')
     .subscribe((csv: string) => {
@@ -370,6 +393,24 @@ export class AppComponent implements OnInit, OnDestroy {
        left: leftPoint.toFixed(0) + 'px',
        'box-shadow': ('0 0 0 1000vmax rgba(0,0,0,' + alpha + ')')
     };
+  }
+
+  hoverImageStyleObject(surveyStar: SurveyStar): object {
+    return {
+      'display': this.activeSurveyStar?.imageLink == surveyStar?.imageLink ? 'inline' : 'none',
+      'position': 'absolute',
+      'left': surveyStar.x + 'px',
+      'top': surveyStar.y + 'px',
+      'z-index': '9'
+    };
+  }
+
+  unhoverStar(){
+    this.activeSurveyStar = null;
+  }
+
+  hoverStar(surveyStar: SurveyStar){
+    this.activeSurveyStar = surveyStar;
   }
 
   getActiveStars(): Star[] {

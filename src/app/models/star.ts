@@ -11,6 +11,9 @@ export class Star {
     xEnd!: number;
     yEnd!: number;
 
+    imageLink!: string;
+    embeddedLink!: string;
+
     // proper coords
     x!: number;
     y!: number;
