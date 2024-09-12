@@ -19,10 +19,10 @@ import { Npc } from './models/npc';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  mapUrls = ['https://i.imgur.com/xbHRYRH.png'];
+  mapUrls = ['https://i.imgur.com/G3Mg8TI.png'];
   mapIndex = 0;
-  mapHeight = 1000;
-  mapWidth = 1000;
+  mapHeight = 2500;
+  mapWidth = 1840;
   isOpen = false;
   timeToOpen = 270;
   scrollCountdown = 0;
@@ -30,13 +30,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private panZoomAPI!: PanZoomAPI;
   private apiSubscription!: Subscription;
   hasLoaded = false;
-  title = 'fta4-ang-map'
+  title = 'fta4-survey-map'
 
   //marker box
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
 
   @ViewChild('drawer') drawer?: { open: () => void; close: () => void; };
-  @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
+  // @ViewChild('titleChild') titleChild?: { buildOptions: () => void; };
 
   activeStar!: Star;
   activeStars!: Star[];
@@ -240,7 +240,7 @@ export class AppComponent implements OnInit, OnDestroy {
         stars.push(newStar);
       }
       this.stars = stars;
-      this.titleChild?.buildOptions();
+      //this.titleChild?.buildOptions();
     });
 
     //polities
@@ -260,7 +260,7 @@ export class AppComponent implements OnInit, OnDestroy {
         polities.push(newPolity);
       }
       this.polities = polities;
-      this.titleChild?.buildOptions();
+      //this.titleChild?.buildOptions();
     });
 
     //territories
@@ -294,7 +294,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       this.territories = territories;
-      this.titleChild?.buildOptions();
+      //this.titleChild?.buildOptions();
     });
 
     //npcs
@@ -317,7 +317,7 @@ export class AppComponent implements OnInit, OnDestroy {
         npcs.push(newNpc);
       }
       this.npcs = npcs;
-      this.titleChild?.buildOptions();
+      //this.titleChild?.buildOptions();
     });
   }
 

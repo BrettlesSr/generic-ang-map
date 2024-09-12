@@ -1,6 +1,6 @@
 <div class="pad-top"></div>
 
-<app-title [parent]="this" #titleChild class="title"></app-title>
+<!-- <app-title [parent]="this" #titleChild class="title"></app-title> -->
 
 <button *ngIf="mapUrls.length > 1" class="fab" mat-fab color="primary" (click)="nextMapMode()">
   <mat-icon>donut_small</mat-icon>
@@ -28,10 +28,10 @@
   <pan-zoom [hidden]="!hasLoaded" [config]="panZoomConfig">
     <div style="position: relative;">
       <img src="{{mapUrls[mapIndex]}}" width="{{mapWidth}}" height="{{mapHeight}}" usemap="#starmap">    
-      <map name="starmap">
+      <!-- <map name="starmap">
         <area *ngFor="let star of stars" shape="rect" coords="{{star.xStart}}, {{star.yStart}}, {{star.xEnd}}, {{star.yEnd}}" alt="{{star.name}}" (click)="openDrawerToStar(star.name)">
         <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()">
-      </map>
+      </map> -->
       <div
         class="highlight"
         [ngStyle]="highlightDimensionsCss">
