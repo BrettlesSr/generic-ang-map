@@ -58,8 +58,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
     this.panZoomConfig.zoomLevels = 7;
-    this.panZoomConfig.neutralZoomLevel = 3;
-    this.panZoomConfig.scalePerZoomLevel = 1.5;
+    this.panZoomConfig.neutralZoomLevel = 4;
+    this.panZoomConfig.scalePerZoomLevel = 1.4;
     this.panZoomConfig.freeMouseWheel = false;
     this.panZoomConfig.invertMouseWheel = true;
     this.panZoomConfig.initialZoomLevel = 2;
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       img.src = url;
-      this.scrollToPoint(-600, 50, false)
+      this.scrollToPoint(-550, 80, false)
     }
   }
 
