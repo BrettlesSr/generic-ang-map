@@ -4,4 +4,5 @@ export class SurveyStar {
     radius!: number;
     imageLink!: string;
     embeddedLink!: string;
+    image!: HTMLImageElement;
 }

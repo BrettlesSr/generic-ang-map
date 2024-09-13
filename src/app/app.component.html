@@ -32,7 +32,7 @@
         <area *ngFor="let star of surveyStars" shape="circle" coords="{{star.x}}, {{star.y}}, {{star.radius}}" (mouseover)="hoverStar(star)" (mouseleave)="unhoverStar()">
         <!-- <area shape="rect" coords="0,0,{{mapWidth}},{{mapHeight}}" (click)="closeDrawer()"> -->
       </map>
-      <img *ngFor="let star of surveyStars" class="hoverImage" src="{{star.imageLink}}" [ngStyle]="hoverImageStyleObject(star)" (mouseover)="hoverStar(star)" (mouseleave)="unhoverStar()">
+      <img *ngFor="let star of surveyStars" class="hoverImage" src="{{activeStarImageLink(star)}}" [ngStyle]="hoverImageStyleObject(star)" (mouseover)="hoverStar(star)" (mouseleave)="unhoverStar()">
       <div
         class="highlight"
         [ngStyle]="highlightDimensionsCss">

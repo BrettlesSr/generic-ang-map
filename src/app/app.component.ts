@@ -41,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   activeStar!: Star;
   activeSurveyStar: SurveyStar | null = null;
+  mouseIsOffPiste: boolean = true;
   activeStars!: Star[];
   activePolity!: Polity;
   stars: Star[] = [];
@@ -234,12 +235,14 @@ export class AppComponent implements OnInit, OnDestroy {
         newStar.x = Number(element["x"]);
         newStar.y = Number(element["y"]);
         newStar.radius = Number(element["radius"]);
-        newStar.imageLink = element["imageLink"]
-        newStar.embeddedLink = element["embeddedLink"]
+        newStar.imageLink = element["imageLink"];
+        const img = new Image();
+        img.src = newStar.imageLink;
+        newStar.image = img;
+        newStar.embeddedLink = element["embeddedLink"];
         surveyStars.push(newStar);
       }
       this.surveyStars = surveyStars;
-      console.log(this.surveyStars)
     });
 
     //stars
@@ -406,11 +409,27 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   unhoverStar(){
-    this.activeSurveyStar = null;
+    this.mouseIsOffPiste = true;
+    const db = this.debounce(
+      this.dismissHoverImage,
+      500
+    );
+    db(this);
+  }
+
+  dismissHoverImage(self: any) {
+    if (self.mouseIsOffPiste) {
+      self.activeSurveyStar = null;
+    }
   }
 
   hoverStar(surveyStar: SurveyStar){
     this.activeSurveyStar = surveyStar;
+    this.mouseIsOffPiste = false;
+  }
+
+  activeStarImageLink(surveyStar: SurveyStar){
+    return surveyStar.imageLink;
   }
 
   getActiveStars(): Star[] {
@@ -436,4 +455,12 @@ export class AppComponent implements OnInit, OnDestroy {
       data: { subMapUrl, subMapTitle }
     });
   }
+
+  debounce = (fn: Function, ms = 300) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return function (this: any, ...args: any[]) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), ms);
+    };
+  };
 }
