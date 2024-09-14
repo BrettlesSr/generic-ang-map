@@ -42,6 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
   activeStar!: Star;
   activeSurveyStar: SurveyStar | null = null;
   mouseIsOffPiste: boolean = true;
+  randomSeed: number = 0;
   activeStars!: Star[];
   activePolity!: Polity;
   stars: Star[] = [];
@@ -419,6 +420,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   dismissHoverImage(self: any) {
     if (self.mouseIsOffPiste) {
+      self.randomSeed = Math.random();
       self.activeSurveyStar = null;
     }
   }
@@ -429,7 +431,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   activeStarImageLink(surveyStar: SurveyStar){
-    return surveyStar.imageLink;
+    return surveyStar.imageLink + '?v=$' + this.randomSeed;
   }
 
   getActiveStars(): Star[] {
