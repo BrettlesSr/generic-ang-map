@@ -25,6 +25,7 @@ import { TitleComponent } from './title/title.component';
 import { PolityInfoComponent } from './polity-info/polity-info.component';
 import { StarInfoComponent } from './star-info/star-info.component';
 import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
+import { HoverDataComponent } from './hover-data/hover-data.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { SubMapModalComponent } from './sub-map-modal/sub-map-modal.component';
     PolityInfoComponent,
     StarInfoComponent,
     ArticlePipe,
-    SubMapModalComponent
+    SubMapModalComponent,
+    HoverDataComponent
   ],
   imports: [
     BrowserModule,

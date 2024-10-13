@@ -1,0 +1,27 @@
+.hover {
+    z-index: 10;
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.hoverText {
+    color: white;
+    width: 600px;
+    z-index: 11;
+    margin-top: 0px;
+    margin-left: 0px;
+}
+
+.textPositioning {
+    margin-top: 100px;
+    margin-left: 100px;
+}
+
+.title {
+    font-size: 3em;
+}
+
+.info {
+    font-size: 2em;
+    line-height: 150%;
+}

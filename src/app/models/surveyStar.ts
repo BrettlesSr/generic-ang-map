@@ -3,6 +3,7 @@ export class SurveyStar {
     y!: number;
     radius!: number;
     imageLink!: string;
-    embeddedLink!: string;
+    title!: string;
+    info!: string;
     image!: HTMLImageElement;
 }

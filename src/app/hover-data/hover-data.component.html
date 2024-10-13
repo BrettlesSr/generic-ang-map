@@ -1,0 +1,15 @@
+<div [ngStyle]="hoverImageStyleObject()" (mouseover)="hoverStar()" (mouseleave)="unhoverStar()">
+    <img class="hover" src="{{activeStarImageLink()}}">
+    <div class="hover textPositioning" [ngStyle]="hoverTextStyleObject()">
+        <div class="hoverText">
+            <h1 class="title">
+                {{star.title}}
+            </h1>        
+            <p class="info">
+                {{star.info}}
+            </p>
+        </div>
+        
+    </div>
+    
+</div>>

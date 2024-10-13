@@ -42,7 +42,6 @@ export class AppComponent implements OnInit, OnDestroy {
   activeStar!: Star;
   activeSurveyStar: SurveyStar | null = null;
   mouseIsOffPiste: boolean = true;
-  randomSeed: number = 0;
   activeStars!: Star[];
   activePolity!: Polity;
   stars: Star[] = [];
@@ -51,6 +50,8 @@ export class AppComponent implements OnInit, OnDestroy {
   polities : Polity[] = [];
   npcs : Npc[] = [];
   drawerMode: DrawerMode = DrawerMode.Closed;
+  randomSeed: number = 0;
+  opacity = 0;
 
   constructor(
       public dialog: MatDialog,
@@ -229,6 +230,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.fetchGoogleSheet('1HUDbWoPYLDZGy8MHq2eX5dZ8vSachoXbydvFBbwDgFE', 'Stars')
     .subscribe((csv: string) => {
       var data = Papa.parse(csv, { header: true});
+      console.log(data);
       var surveyStars = [];
       for (let i = 0; i < data.data.length; i++) {
         const element = data.data[i] as any;
@@ -240,10 +242,12 @@ export class AppComponent implements OnInit, OnDestroy {
         const img = new Image();
         img.src = newStar.imageLink;
         newStar.image = img;
-        newStar.embeddedLink = element["embeddedLink"];
+        newStar.title = element["title"];
+        newStar.info = element["info"];
         surveyStars.push(newStar);
       }
       this.surveyStars = surveyStars;
+      console.log(this.surveyStars);
     });
 
     //stars
@@ -399,16 +403,6 @@ export class AppComponent implements OnInit, OnDestroy {
     };
   }
 
-  hoverImageStyleObject(surveyStar: SurveyStar): object {
-    return {
-      'display': this.activeSurveyStar?.imageLink == surveyStar?.imageLink ? 'inline' : 'none',
-      'position': 'absolute',
-      'left': surveyStar.x + 'px',
-      'top': surveyStar.y + 'px',
-      'z-index': '9'
-    };
-  }
-
   unhoverStar(){
     this.mouseIsOffPiste = true;
     const db = this.debounce(
@@ -418,6 +412,11 @@ export class AppComponent implements OnInit, OnDestroy {
     db(this);
   }
 
+  hoverStar(surveyStar: SurveyStar){
+    this.activeSurveyStar = surveyStar;
+    this.mouseIsOffPiste = false;
+  }
+
   dismissHoverImage(self: any) {
     if (self.mouseIsOffPiste) {
       self.randomSeed = Math.random();
@@ -425,14 +424,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  hoverStar(surveyStar: SurveyStar){
-    this.activeSurveyStar = surveyStar;
-    this.mouseIsOffPiste = false;
-  }
-
-  activeStarImageLink(surveyStar: SurveyStar){
-    return surveyStar.imageLink + '?v=$' + this.randomSeed;
-  }
+  debounce = (fn: Function, ms = 300) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return function (this: any, ...args: any[]) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn.apply(this, args), ms);
+    };
+  };
 
   getActiveStars(): Star[] {
     if (this.activeStar.key === "Solar") {
@@ -457,12 +455,4 @@ export class AppComponent implements OnInit, OnDestroy {
       data: { subMapUrl, subMapTitle }
     });
   }
-
-  debounce = (fn: Function, ms = 300) => {
-    let timeoutId: ReturnType<typeof setTimeout>;
-    return function (this: any, ...args: any[]) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => fn.apply(this, args), ms);
-    };
-  };
 }
