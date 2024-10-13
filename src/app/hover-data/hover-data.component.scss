@@ -6,6 +6,7 @@
 
 .hoverText {
     color: white;
+    font-family: HornetDisplayBold !important;
     width: 600px;
     z-index: 11;
     margin-top: 0px;
@@ -22,6 +23,8 @@
 }
 
 .info {
+    margin-top: 20px;
     font-size: 2em;
     line-height: 150%;
 }
+
