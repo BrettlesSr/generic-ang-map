@@ -20,10 +20,10 @@ import { SurveyStar } from './models/surveyStar';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  mapUrls = ['https://i.imgur.com/G3Mg8TI.png'];
+  mapUrls = ['https://i.imgur.com/C8qryVN.png'];
   mapIndex = 0;
-  mapHeight = 2500;
-  mapWidth = 1840;
+  mapHeight = 4000;
+  mapWidth = 4000;
   isOpen = false;
   timeToOpen = 270;
   scrollCountdown = 0;
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private panZoomAPI!: PanZoomAPI;
   private apiSubscription!: Subscription;
   hasLoaded = false;
-  title = 'fta4-survey-map'
+  title = 'roas-2-map'
 
   //marker box
   xStart: number = 0; xEnd: number = 0; yStart: number = 0; yEnd: number = 0;
