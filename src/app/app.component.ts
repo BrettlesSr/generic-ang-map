@@ -225,6 +225,22 @@ export class AppComponent implements OnInit, OnDestroy {
     }, this.timeToOpen);
   }
 
+  parseInfo(input: string): string {
+    var contents = input.split(/(<|>)/)
+
+    var mode = 0;
+    for (let i = 0; i < contents.length; i++) {
+      const element = contents[i];
+      if (element == "/a") {
+        mode = 0;
+      }
+      else if (element){
+
+      }
+    }
+    return input;
+  }
+
   readInFromDatabase(){
     //hover images
     this.fetchGoogleSheet('1HUDbWoPYLDZGy8MHq2eX5dZ8vSachoXbydvFBbwDgFE', 'Stars')
@@ -244,6 +260,23 @@ export class AppComponent implements OnInit, OnDestroy {
         newStar.image = img;
         newStar.title = element["title"];
         newStar.info = element["info"];
+
+        newStar.link1Name = element["link1Name"];
+        newStar.link1Url = element["link1Url"];
+        newStar.link2Name = element["link2Name"];
+        newStar.link2Url = element["link2Url"];
+        newStar.link3Name = element["link3Name"];
+        newStar.link3Url = element["link3Url"];
+        newStar.link4Name = element["link4Name"];
+        newStar.link4Url = element["link4Url"];
+        newStar.link5Name = element["link5Name"];
+        newStar.link5Url = element["link5Url"];
+        newStar.link6Name = element["link6Name"];
+        newStar.link6Url = element["link6Url"];
+        newStar.link7Name = element["link7Name"];
+        newStar.link7Url = element["link7Url"];
+        newStar.link8Name = element["link8Name"];
+        newStar.link8Url = element["link8Url"];
         surveyStars.push(newStar);
       }
       this.surveyStars = surveyStars;

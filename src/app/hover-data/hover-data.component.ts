@@ -69,7 +69,7 @@ export class HoverDataComponent implements OnInit {
 
   dismissHoverImage(self: any) {
     if (self.parent.mouseIsOffPiste) {
-      self.parent.changeSeed();
+      //self.parent.changeSeed();
       self.parent.activeSurveyStar = null;
     }
   }
