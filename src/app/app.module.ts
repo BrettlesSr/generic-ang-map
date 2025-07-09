@@ -23,10 +23,6 @@ import { PlaceInfoComponent } from './place-info/place-info.component';
 import { PinInfoComponent } from './pin-info/pin-info.component';
 import { AddPinComponent } from './add-pin/add-pin.component';
 import { AddPlaceComponent } from './add-place/add-place.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
-import { provideDatabase,getDatabase } from '@angular/fire/database';
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { AngularFireModule } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
@@ -53,10 +49,6 @@ import { AngularFireModule } from '@angular/fire/compat';
     MatInputModule,
     MatButtonModule,
     MatTabsModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideDatabase(() => getDatabase()),
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireDatabaseModule
   ],
   providers: [],
   bootstrap: [AppComponent]

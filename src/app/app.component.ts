@@ -10,7 +10,6 @@ import { Pin } from './models/pin';
 import { Place } from './models/place';
 import { Point } from './models/point';
 import { Square } from './models/square';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
 
 
 @Component({
@@ -19,7 +18,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  mapUrls = ['https://cdn.discordapp.com/attachments/908862090738012170/922320242510819358/airshipgamemap.jpg'];
+  mapUrls = ['https://images.contentstack.io/v3/assets/bltcedd8dbd5891265b/blt5f18c2119ce26485/6668df65db90945e0caf9be6/beautiful-flowers-lotus.jpg'];
   mapIndex = 0;
   mapHeight = 1000;
   mapWidth = 1000;
@@ -50,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   pointBuffer: Point = new Point();
 
-  constructor(public dialog: MatDialog, private db: AngularFireDatabase){}
+  constructor(public dialog: MatDialog){}
 
   ngOnInit(): void {
     this.panZoomConfig.keepInBounds = false;
@@ -61,14 +60,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.panZoomConfig.invertMouseWheel = true;
     this.panZoomConfig.initialZoomLevel = 3;
     
-    this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
-      this.places = places;
-      this.titleChild?.buildOptions();
-    });
-    this.db.list<Pin>('/pins').valueChanges().subscribe((pins: Pin[]) => {
-      this.pins = pins;
-      this.titleChild?.buildOptions();
-    });
+    // this.db.list<Place>('/places').valueChanges().subscribe((places: Place[]) => {
+    //   this.places = places;
+    //   this.titleChild?.buildOptions();
+    // });
+    // this.db.list<Pin>('/pins').valueChanges().subscribe((pins: Pin[]) => {
+    //   this.pins = pins;
+    //   this.titleChild?.buildOptions();
+    // });
 
     this.apiSubscription = this.panZoomConfig.api.subscribe( (api: PanZoomAPI) => this.panZoomAPI = api );
     for (const url of this.mapUrls) {
@@ -76,8 +75,9 @@ export class AppComponent implements OnInit, OnDestroy {
       if (url == this.mapUrls[0]) {
         let self = this;
         img.onload = (event: any) => {
-          self.mapHeight = event.path[0].height;
-          self.mapWidth = event.path[0].width;
+          console.log(event)
+          self.mapHeight = 450;
+          self.mapWidth = 450;
           //self.scrollToPoint(self.mapWidth / 2, self.mapHeight / 2, true);
           self.hasLoaded = true;
           for (let x = 0; x < self.mapWidth; x += this.resolution) {
@@ -242,7 +242,7 @@ export class AppComponent implements OnInit, OnDestroy {
       if (result === undefined) {
         return;
       }
-      this.db.list('/places').push(result);
+      //this.db.list('/places').push(result);
     });
   }
 
